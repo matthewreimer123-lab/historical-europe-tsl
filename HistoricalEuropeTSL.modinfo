@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod id="7c2d8e5a-f414-4dd8-86a8-4604e70b90e6" version="1">
+  <Properties>
+    <Name>Historical Europe TSL</Name>
+    <Teaser>Gameplay-scaled Europe with dynamic true starting locations.</Teaser>
+    <Description>A 120 x 80 Europe map with dynamically assigned true starts. Gameplay pacing changes are intentionally kept in a separate mod.</Description>
+    <Authors>Matthew Reimer</Authors>
+    <SpecialThanks>Gedemon and the YnAEMP contributors for the reference architecture.</SpecialThanks>
+    <HideSetupGame>0</HideSetupGame>
+    <AffectsSavedGames>1</AffectsSavedGames>
+    <MinCompatibleSaveVersion>0</MinCompatibleSaveVersion>
+    <SupportsSinglePlayer>1</SupportsSinglePlayer>
+    <SupportsMultiplayer>1</SupportsMultiplayer>
+  </Properties>
+  <Dependencies />
+  <References />
+  <Blocks />
+  <Files>
+    <File md5="" import="0">Maps/HistoricalEurope.Civ5Map</File>
+    <File md5="" import="0">XML/Tables.xml</File>
+    <File md5="" import="0">XML/MajorStarts.xml</File>
+    <File md5="" import="0">XML/Text.xml</File>
+    <File md5="" import="0">XML/InGameUIAddin.xml</File>
+    <File md5="" import="1">Lua/AssignStartingPlots.lua</File>
+  </Files>
+  <Actions>
+    <OnModActivated>
+      <UpdateDatabase>XML/Tables.xml</UpdateDatabase>
+    </OnModActivated>
+    <OnModActivated>
+      <UpdateDatabase>XML/MajorStarts.xml</UpdateDatabase>
+    </OnModActivated>
+    <OnModActivated>
+      <UpdateDatabase>XML/Text.xml</UpdateDatabase>
+    </OnModActivated>
+    <OnModActivated>
+      <UpdateDatabase>XML/InGameUIAddin.xml</UpdateDatabase>
+    </OnModActivated>
+  </Actions>
+</Mod>
