@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GameData>
+  <Table name="HistoricalEuropeCivilizationStarts">
+    <Column name="CivilizationType" type="text" reference="Civilizations(Type)" />
+    <Column name="PrimaryX" type="integer" />
+    <Column name="PrimaryY" type="integer" />
+    <Column name="AlternateX" type="integer" />
+    <Column name="AlternateY" type="integer" />
+    <Column name="Priority" type="integer" default="100" />
+    <Column name="Region" type="text" />
+  </Table>
+</GameData>
