@@ -1,0 +1,10 @@
+*.civ5sln
+*.suo
+*.user
+*.cache
+*.log
+Build/
+Packages/
+__pycache__/
+Desktop.ini
+Thumbs.db
