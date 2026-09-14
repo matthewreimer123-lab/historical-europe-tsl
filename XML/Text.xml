@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GameData>
+  <Language_en_US>
+    <Row Tag="TXT_KEY_HISTORICAL_EUROPE_TSL_NAME">
+      <Text>Historical Europe TSL</Text>
+    </Row>
+    <Row Tag="TXT_KEY_HISTORICAL_EUROPE_TSL_DESCRIPTION">
+      <Text>A gameplay-scaled 120 x 80 map of Europe with dynamic true starting locations.</Text>
+    </Row>
+  </Language_en_US>
+</GameData>
