@@ -43,6 +43,10 @@ scripts/                    local validation tools
 4. Verify both civilizations start correctly in a normal modded-game setup.
 5. Only then add the remaining civilization starts and collision handling.
 
+The current test build is mod version 2. Version 2 adds the required
+`MapScripts` database registration so the generated Lua map appears in
+the normal map-type selector.
+
 ## Validation
 
 From the repository root:

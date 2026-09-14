@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GameData>
+  <MapScripts>
+    <Row>
+      <FileName>Maps\HistoricalEurope.lua</FileName>
+      <Name>TXT_KEY_HISTORICAL_EUROPE_TSL_NAME</Name>
+      <Description>TXT_KEY_HISTORICAL_EUROPE_TSL_DESCRIPTION</Description>
+      <IsAdvancedMap>1</IsAdvancedMap>
+      <SupportsSinglePlayer>1</SupportsSinglePlayer>
+      <SupportsMultiplayer>1</SupportsMultiplayer>
+      <DefaultCityStates>20</DefaultCityStates>
+      <Hidden>0</Hidden>
+      <IconIndex>0</IconIndex>
+      <IconAtlas>WORLDTYPE_ATLAS</IconAtlas>
+    </Row>
+  </MapScripts>
+</GameData>
