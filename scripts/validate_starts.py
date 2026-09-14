@@ -9,7 +9,7 @@ from pathlib import Path
 
 WIDTH = 120
 HEIGHT = 80
-CSV_PATH = Path(__file__).resolve().parents[1] / "data" / "major-starts.csv"
+CSV_PATH = Path(__file__).resolve().parents[1] / "data" / "generated-major-starts.csv"
 
 
 def main() -> int:

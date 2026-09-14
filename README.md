@@ -17,11 +17,11 @@ This repository is an initial design and implementation scaffold. It includes:
 - the map scale and regional capacity specification;
 - provisional major-civilization TSL anchors;
 - the Civ V database schema for primary and alternate starts;
-- an experimental Lua relocation component;
+- a deterministic Lua map generator with start assignment during map creation;
 - a validator for the coordinate data;
-- a placeholder for the WorldBuilder-generated `.Civ5Map` file.
+- a rendered PNG preview of the generated terrain.
 
-The actual binary map must be drawn and saved with the Civilization V SDK WorldBuilder on Windows. The provisional TSL coordinates will then be adjusted against the finished coastline and terrain.
+The map is generated from geographic polygon data and a nonlinear gameplay projection. WorldBuilder is only needed for optional inspection and small finishing changes.
 
 ## Repository layout
 
@@ -37,9 +37,9 @@ scripts/                    local validation tools
 
 ## First playable milestone
 
-1. Draw a coarse 120 x 80 landmass in WorldBuilder.
-2. Save it as `Maps/HistoricalEurope.Civ5Map` without scenario players.
-3. Place England and France using the provisional London and Paris anchors.
+1. Generate the 120 x 80 map script and inspect `docs/map-preview.png`.
+2. Adjust the projection, coastline, and terrain rules in `scripts/generate_map.py`.
+3. Test England and France using the generated London and Paris anchors.
 4. Verify both civilizations start correctly in a normal modded-game setup.
 5. Only then add the remaining civilization starts and collision handling.
 
@@ -48,6 +48,7 @@ scripts/                    local validation tools
 From the repository root:
 
 ```bash
+python scripts/generate_map.py
 python scripts/validate_starts.py
 ```
 

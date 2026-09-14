@@ -16,12 +16,10 @@
   <References />
   <Blocks />
   <Files>
-    <File md5="" import="0">Maps/HistoricalEurope.Civ5Map</File>
+    <File md5="" import="1">Maps/HistoricalEurope.lua</File>
     <File md5="" import="0">XML/Tables.xml</File>
     <File md5="" import="0">XML/MajorStarts.xml</File>
     <File md5="" import="0">XML/Text.xml</File>
-    <File md5="" import="0">XML/InGameUIAddin.xml</File>
-    <File md5="" import="1">Lua/AssignStartingPlots.lua</File>
   </Files>
   <Actions>
     <OnModActivated>
@@ -32,9 +30,6 @@
     </OnModActivated>
     <OnModActivated>
       <UpdateDatabase>XML/Text.xml</UpdateDatabase>
-    </OnModActivated>
-    <OnModActivated>
-      <UpdateDatabase>XML/InGameUIAddin.xml</UpdateDatabase>
     </OnModActivated>
   </Actions>
 </Mod>
