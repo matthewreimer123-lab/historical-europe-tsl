@@ -21,5 +21,6 @@
     <Row CivilizationType="CIVILIZATION_HUNS" PrimaryX="67" PrimaryY="39" AlternateX="88" AlternateY="45" Priority="30" Region="Carpathian Basin" />
     <Row CivilizationType="CIVILIZATION_CARTHAGE" PrimaryX="50" PrimaryY="15" AlternateX="48" AlternateY="9" Priority="10" Region="North Africa" />
     <Row CivilizationType="CIVILIZATION_MOROCCO" PrimaryX="15" PrimaryY="6" AlternateX="17" AlternateY="9" Priority="10" Region="North Africa" />
+    <Row CivilizationType="CIVILIZATION_EGYPT" PrimaryX="89" PrimaryY="3" AlternateX="87" AlternateY="5" Priority="10" Region="Nile Valley" />
   </HistoricalEuropeCivilizationStarts>
 </GameData>

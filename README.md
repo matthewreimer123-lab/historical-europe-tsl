@@ -49,11 +49,11 @@ scripts/                    local validation tools
 4. Verify both civilizations start correctly in a normal modded-game setup.
 5. Only then add the remaining civilization starts and collision handling.
 
-The current test build is mod version 5. Version 5 adds regionally modeled
-uplands and additional mountain systems while preserving the major European
-plains and settlement basins. Version 4 added geographic rivers, improved
-Morocco, and introduced collision-aware true starts for regional city-states.
-Version 3 fixed map initialization, while version 2 added map registration.
+The current test build is mod version 6. Version 6 rebuilds rivers as continuous
+Civ V vertex paths guided by geographic corridors, disables random lake
+generation, and adds Egypt at Memphis with Alexandria as its alternate start.
+Version 5 added regionally modeled topography. Version 4 added the first river
+and city-state TSL pass, while version 3 fixed map initialization.
 
 ## Validation
 
