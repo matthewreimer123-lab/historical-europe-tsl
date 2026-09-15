@@ -35,11 +35,11 @@ database.executescript(
 database.executescript(SQL)
 
 speed = database.execute("SELECT * FROM GameSpeeds").fetchone()
-assert speed[1:] == (150, 125, 75, 75, 85, 80), speed
-assert database.execute("SELECT Cost FROM Units WHERE Type='UNIT_SETTLER'").fetchone()[0] == 80
+assert speed[1:] == (225, 125, 75, 75, 85, 80), speed
+assert database.execute("SELECT Cost FROM Units WHERE Type='UNIT_SETTLER'").fetchone()[0] == 60
 assert database.execute("SELECT Cost FROM Units WHERE Type='UNIT_WARRIOR'").fetchone()[0] == 40
 assert database.execute("SELECT NumCitiesPolicyCostMod, NumCitiesTechCostMod FROM Worlds").fetchone() == (8, 4)
 assert database.execute("SELECT Value FROM Defines").fetchone()[0] == 2
-assert database.execute("SELECT TurnsPerIncrement, MonthIncrement FROM GameSpeed_Turns").fetchone() == (150, 80)
+assert database.execute("SELECT TurnsPerIncrement, MonthIncrement FROM GameSpeed_Turns").fetchone() == (225, 53)
 
 print("Historical Pacing SQL validation passed.")
