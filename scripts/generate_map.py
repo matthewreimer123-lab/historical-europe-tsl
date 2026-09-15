@@ -17,11 +17,15 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 
 ROOT = Path(__file__).resolve().parents[1]
-WIDTH, HEIGHT = 120, 80
+WIDTH, HEIGHT = 96, 60
+MIN_LON, MAX_LON = -12.0, 42.0
+MIN_LAT, MAX_LAT = 28.0, 65.0
 
-# Nonlinear gameplay projection: central Europe gets more tiles per degree.
-X_KNOTS = [(-25, 0), (-10, 10), (0, 29), (10, 51), (20, 74), (30, 94), (45, 111), (55, 119)]
-Y_KNOTS = [(28, 0), (35, 11), (42, 26), (49, 42), (56, 58), (64, 72), (72, 79)]
+# Cropped nonlinear gameplay projection. Iceland, the high Arctic, the Caspian,
+# Iran, and Mesopotamia are outside the canvas; central Europe retains more
+# room per degree than the quieter northern and eastern margins.
+X_KNOTS = [(-12, 0), (-10, 3), (0, 20), (10, 39), (20, 59), (30, 77), (42, 95)]
+Y_KNOTS = [(28, 0), (35, 9), (42, 21), (49, 34), (56, 46), (64, 58), (65, 59)]
 
 MOUNTAIN_LINES = [
     [(-1.5, 42.7), (1.5, 42.8), (3.0, 42.5)],  # Pyrenees
@@ -31,12 +35,9 @@ MOUNTAIN_LINES = [
     [(14.0, 66.0), (10.0, 63.0), (8.0, 60.0), (7.0, 57.5)],  # Scandinavian range
     [(19.0, 43.5), (23.0, 42.5), (27.0, 42.0)],  # Balkans
     [(38.0, 43.0), (43.0, 42.5), (48.0, 42.0)],  # Caucasus
-    [(53.0, 64.0), (55.0, 59.0), (55.0, 54.0), (54.0, 50.0)],  # Ural edge
     [(-10.0, 31.2), (-7.5, 32.0), (-5.0, 33.0), (-2.0, 34.5)],  # Atlas
     [(31.0, 40.5), (35.0, 40.8), (39.0, 40.5)],  # Pontic Mountains
     [(29.0, 37.0), (34.0, 37.2), (39.5, 37.0)],  # Taurus Mountains
-    [(44.0, 38.0), (47.0, 35.5), (50.0, 32.5), (53.0, 29.5)],  # Zagros
-    [(48.0, 36.5), (52.0, 36.2), (55.0, 36.5)],  # Alborz
 ]
 
 # Lower upland belts. Width is measured in projected map tiles and density
@@ -61,7 +62,6 @@ HILL_BANDS = [
     ([(34.0, 44.0), (35.0, 45.0)], 2.0, 0.66),  # Crimean Mountains
     ([(31.0, 57.0), (34.0, 56.0)], 3.5, 0.48),  # Valdai Hills
     ([(36.0, 52.0), (40.0, 50.0)], 4.0, 0.40),  # Central Russian Upland
-    ([(43.0, 39.0), (47.0, 36.0), (51.0, 32.0), (55.0, 29.0)], 5.0, 0.78),  # Iranian plateau
 ]
 
 # Simplified geographic centerlines, ordered roughly from source to mouth.
@@ -83,11 +83,8 @@ RIVER_LINES = {
     "Dniester": [(24.0, 49.0), (26.0, 47.5), (28.5, 46.0), (30.0, 45.5)],
     "Dnieper": [(33.0, 54.5), (31.0, 52.0), (30.5, 50.4), (32.0, 48.0), (34.5, 46.0)],
     "Don": [(38.0, 54.0), (39.5, 51.0), (40.5, 48.0), (39.5, 47.0)],
-    "Volga": [(37.0, 57.0), (41.0, 55.5), (45.0, 52.0), (48.0, 48.0), (48.5, 45.0)],
     "Nile": [(31.2, 29.0), (31.0, 29.8), (31.1, 30.7), (31.2, 31.4)],
     "Jordan": [(35.6, 33.2), (35.5, 32.3), (35.5, 31.5)],
-    "Euphrates": [(38.0, 38.5), (40.0, 36.5), (42.0, 34.0), (44.5, 32.0), (47.0, 30.5)],
-    "Tigris": [(42.5, 38.0), (43.5, 36.0), (44.0, 34.0), (46.0, 31.5)],
 }
 
 # Major systems receive extra deterministic tributaries. These are generated
@@ -95,7 +92,7 @@ RIVER_LINES = {
 # reaching their confluence. Long rivers get two branches; compact rivers get
 # one so dense regions gain water without becoming solid river-edge mazes.
 RIVER_BRANCH_COUNTS = {
-    name: (2 if name in {"Rhine", "Elbe", "Rhone", "Danube", "Vistula", "Dnieper", "Don", "Volga", "Nile", "Euphrates", "Tigris"} else 1)
+    name: (2 if name in {"Rhine", "Elbe", "Rhone", "Danube", "Vistula", "Dnieper", "Don", "Nile"} else 1)
     for name in RIVER_LINES
 }
 
@@ -115,12 +112,24 @@ def interpolate(value, knots):
     return knots[-1][1]
 
 
+def northern_x_scale(lat):
+    """Progressively narrow Scandinavia above 55N around a 16E anchor."""
+    amount = max(0.0, min(1.0, (lat - 54.0) / 12.0))
+    return 1.0 - amount * 0.36
+
+
 def project(lon, lat):
-    return interpolate(lon, X_KNOTS), interpolate(lat, Y_KNOTS)
+    base_x = interpolate(lon, X_KNOTS)
+    anchor_x = interpolate(16.0, X_KNOTS)
+    scale = northern_x_scale(lat)
+    return anchor_x + (base_x - anchor_x) * scale, interpolate(lat, Y_KNOTS)
 
 
 def inverse_project(x, y):
-    return interpolate(x, [(b, a) for a, b in X_KNOTS]), interpolate(y, [(b, a) for a, b in Y_KNOTS])
+    lat = interpolate(y, [(b, a) for a, b in Y_KNOTS])
+    anchor_x = interpolate(16.0, X_KNOTS)
+    base_x = anchor_x + (x - anchor_x) / northern_x_scale(lat)
+    return interpolate(base_x, [(b, a) for a, b in X_KNOTS]), lat
 
 
 def point_in_ring(lon, lat, ring):
@@ -146,6 +155,8 @@ def point_in_polygon(lon, lat, rings):
 
 
 def point_on_land(lon, lat, source_features):
+    if not (MIN_LON <= lon <= MAX_LON and MIN_LAT <= lat <= MAX_LAT):
+        return False
     for item in source_features:
         geometry = item["geometry"]
         polygons = geometry["coordinates"] if geometry["type"] == "MultiPolygon" else [geometry["coordinates"]]
@@ -679,7 +690,7 @@ def write_preview(plots, terrains, river_guides):
     axis.imshow(image, origin="lower", interpolation="nearest", cmap=ListedColormap(colors), vmin=0, vmax=8)
     river_points = [point for _, guide in river_guides for point in guide]
     axis.scatter([point[0] for point in river_points], [point[1] for point in river_points], s=3, c="#42bff5")
-    axis.set(title="Historical Europe TSL — generated 120×80 topography", xlabel="X", ylabel="Y")
+    axis.set(title=f"Historical Europe TSL — generated {WIDTH}×{HEIGHT} topography", xlabel="X", ylabel="Y")
     axis.set_aspect("equal")
     figure.tight_layout()
     figure.savefig(ROOT / "docs/map-preview.png")

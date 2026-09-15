@@ -10,7 +10,7 @@ This repository now contains two independently selectable mods:
 
 ## Design goals
 
-- A purpose-built **120 x 80**, non-wrapping Europe map.
+- A purpose-built **96 x 60**, non-wrapping Europe map.
 - Enlarged Western and Central Europe so nearby civilizations have usable territory.
 - True starts selected dynamically rather than fixed scenario players.
 - The map mod remains separate from the optional Historical Development Pacing mod.
@@ -43,13 +43,15 @@ scripts/                    local validation tools
 
 ## First playable milestone
 
-1. Generate the 120 x 80 map script and inspect `docs/map-preview.png`.
+1. Generate the 96 x 60 map script and inspect `docs/map-preview.png`.
 2. Adjust the projection, coastline, and terrain rules in `scripts/generate_map.py`.
 3. Test England and France using the generated London and Paris anchors.
 4. Verify both civilizations start correctly in a normal modded-game setup.
 5. Only then add the remaining civilization starts and collision handling.
 
-The current test build is mod version 9. Version 9 adds deterministic
+The current test build is mod version 10. Version 10 crops Iceland, the high
+Arctic, the Caspian, Iran, and Mesopotamia; moves the eastern boundary to the
+eastern Black Sea; and narrows Scandinavia. Version 9 added deterministic
 tributaries to every river system and gives the Nile a three-mouth delta.
 Version 8 added the Thames, moved the Nile's source away from the map boundary,
 and restored automatic flood plains on desert river tiles. Version 7 compressed the Russian and steppe region and

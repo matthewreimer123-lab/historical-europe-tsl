@@ -7,8 +7,8 @@ import csv
 from collections import defaultdict
 from pathlib import Path
 
-WIDTH = 120
-HEIGHT = 80
+WIDTH = 96
+HEIGHT = 60
 CSV_PATH = Path(__file__).resolve().parents[1] / "data" / "generated-major-starts.csv"
 
 

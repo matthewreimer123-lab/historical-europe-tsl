@@ -4,8 +4,8 @@
 
 | Property | Value |
 |---|---:|
-| Width | 120 hexes |
-| Height | 80 hexes |
+| Width | 96 hexes |
+| Height | 60 hexes |
 | Wrap X | No |
 | Wrap Y | No |
 | Intended ruleset | Civilization V: Brave New World |
@@ -16,9 +16,9 @@ Coordinates use Civ V's lower-left origin: X increases eastward and Y increases 
 
 ## Geographic scope
 
-- West: Atlantic approaches, Iceland, Ireland, Portugal, and Morocco.
-- North: northern Scandinavia and the Arctic coast.
-- East: European Russia, the Caucasus, and the western Caspian edge.
+- West: Atlantic approaches, Ireland, Portugal, and Morocco; Iceland is excluded.
+- North: Scandinavia below the far-Arctic fringe.
+- East: European Russia and the eastern Black Sea coast; the Caspian is excluded.
 - South: the northern Maghreb, Sicily, Greece, Crete, Cyprus, and central Anatolia.
 
 The map is deliberately not a uniform geographic projection.
@@ -27,7 +27,7 @@ The map is deliberately not a uniform geographic projection.
 
 1. Britain, France, the Low Countries, Germany, northern Italy, Greece, and the Balkans receive extra tiles.
 2. The Mediterranean must be wide enough for naval movement but not consume the map.
-3. European Russia remains large, but its kilometres-per-tile ratio is higher than Central Europe's.
+3. European Russia is deliberately compressed and ends east of Moscow.
 4. Mountain chains constrain movement without becoming solid, impassable walls.
 5. Important straits remain strategically meaningful: Gibraltar, Dover, Danish straits, Bosporus, and Dardanelles.
 
@@ -40,11 +40,11 @@ The map is deliberately not a uniform geographic projection.
 | Iberia | 7-9 |
 | Italy | 6-8 |
 | Germany and Low Countries | 10-12 |
-| Scandinavia | 8-11 |
+| Scandinavia | 6-8 |
 | Poland and Baltics | 7-9 |
 | Balkans | 8-10 |
 | Ukraine | 7-9 |
-| European Russia | 12-16 |
+| European Russia | 7-10 |
 | Anatolia | 7-9 |
 | North African coast | 7-10 |
 
