@@ -90,6 +90,23 @@ RIVER_LINES = {
     "Tigris": [(42.5, 38.0), (43.5, 36.0), (44.0, 34.0), (46.0, 31.5)],
 }
 
+# Major systems receive extra deterministic tributaries. These are generated
+# from land plots near the parent channel, then follow the parent guide after
+# reaching their confluence. Long rivers get two branches; compact rivers get
+# one so dense regions gain water without becoming solid river-edge mazes.
+RIVER_BRANCH_COUNTS = {
+    name: (2 if name in {"Rhine", "Elbe", "Rhone", "Danube", "Vistula", "Dnieper", "Don", "Volga", "Nile", "Euphrates", "Tigris"} else 1)
+    for name in RIVER_LINES
+}
+
+# The Nile delta is deliberately authored rather than randomized: the central
+# channel reaches the Mediterranean while western and eastern distributaries
+# split from the lower Nile to form three distinct mouths.
+NILE_DELTA_LINES = {
+    "Nile Rosetta distributary": [(31.1, 30.3), (30.7, 30.7), (30.2, 31.1), (29.8, 31.5)],
+    "Nile Damietta distributary": [(31.1, 30.3), (31.5, 30.7), (31.9, 31.1), (32.3, 31.5)],
+}
+
 
 def interpolate(value, knots):
     for (a, out_a), (b, out_b) in zip(knots, knots[1:]):
@@ -258,9 +275,9 @@ def land_path(start, goal, plots, maximum_steps=18):
     return []
 
 
-def build_river_guides(plots):
+def build_guides_from_lines(lines, plots):
     guides = []
-    for name, points in RIVER_LINES.items():
+    for name, points in lines.items():
         route = []
         for (lon_a, lat_a), (lon_b, lat_b) in zip(points, points[1:]):
             ax, ay = project(lon_a, lat_a)
@@ -293,6 +310,59 @@ def build_river_guides(plots):
         if len(guide) >= 2:
             guides.append((name, guide))
     return guides
+
+
+def build_tributary_guides(core_guides, plots):
+    """Create repeatable, natural-looking tributaries for every core river."""
+    branches = []
+    used_sources = set()
+    for river_number, (name, parent) in enumerate(core_guides):
+        branch_count = RIVER_BRANCH_COUNTS[name]
+        parent_index = {point: index for index, point in enumerate(parent)}
+        for branch_number in range(branch_count):
+            fraction = (0.35, 0.62)[branch_number] if branch_count == 2 else 0.48
+            junction_index = min(len(parent) - 2, max(1, round((len(parent) - 1) * fraction)))
+            junction = parent[junction_index]
+            candidates = []
+            for y in range(max(1, junction[1] - 6), min(HEIGHT - 1, junction[1] + 7)):
+                for x in range(max(1, junction[0] - 6), min(WIDTH - 1, junction[0] + 7)):
+                    point = (x, y)
+                    distance = math.hypot(x - junction[0], y - junction[1])
+                    if not 3.0 <= distance <= 6.2 or point in parent_index or point in used_sources:
+                        continue
+                    if plots[y][x] not in ("L", "H"):
+                        continue
+                    land_neighbors = sum(plots[ny][nx] in ("L", "H", "M") for nx, ny in neighbors(x, y))
+                    if land_neighbors < 4:
+                        continue
+                    route = land_path(point, junction, plots, maximum_steps=24)
+                    if len(route) < 3:
+                        continue
+                    # If the path touches the parent early, use that first
+                    # contact as the true confluence rather than crossing it.
+                    contact = next((i for i, tile in enumerate(route) if tile in parent_index), None)
+                    if contact is None:
+                        continue
+                    route = route[:contact + 1]
+                    join_index = parent_index[route[-1]]
+                    branch = route + parent[join_index + 1:]
+                    if len(branch) < 4:
+                        continue
+                    salt = 1000 + river_number * 17 + branch_number * 101
+                    score = hash01(x, y, salt) + min(distance, 5.0) * 0.08
+                    candidates.append((score, point, branch))
+            if candidates:
+                _, source, branch = max(candidates, key=lambda item: item[0])
+                used_sources.add(source)
+                branches.append((f"{name} tributary {branch_number + 1}", branch))
+    return branches
+
+
+def build_river_guides(plots):
+    core_guides = build_guides_from_lines(RIVER_LINES, plots)
+    delta_guides = build_guides_from_lines(NILE_DELTA_LINES, plots)
+    tributary_guides = build_tributary_guides(core_guides, plots)
+    return core_guides + delta_guides + tributary_guides
 
 
 def nearest_start_plot(x, y, plots, maximum_radius=6):
