@@ -1,4 +1,4 @@
--- Historical Development Pacing v2
+-- Historical Development Pacing v3
 -- All changes apply equally to human and AI players and stack with the
 -- selected vanilla game speed.
 
@@ -25,10 +25,10 @@ UPDATE Worlds
 SET NumCitiesPolicyCostMod = MAX(1, CAST((NumCitiesPolicyCostMod * 4 + 4) / 5 AS INTEGER)),
     NumCitiesTechCostMod   = MAX(1, CAST((NumCitiesTechCostMod * 4 + 4) / 5 AS INTEGER));
 
--- Reduce the flat happiness cost of each founded city from 3 to 2.
+-- Reduce the flat happiness cost of each founded city from 3 to 1.
 -- Population unhappiness and occupied-city penalties remain unchanged.
 UPDATE Defines
-SET Value = 2
+SET Value = 1
 WHERE Name = 'UNHAPPINESS_PER_CITY';
 
 -- Add 125% more turns while keeping approximately the same historical end

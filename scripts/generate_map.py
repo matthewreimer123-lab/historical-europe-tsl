@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 WIDTH, HEIGHT = 120, 80
 
 # Nonlinear gameplay projection: central Europe gets more tiles per degree.
-X_KNOTS = [(-25, 0), (-10, 11), (0, 29), (10, 49), (20, 69), (30, 87), (45, 108), (55, 119)]
+X_KNOTS = [(-25, 0), (-10, 10), (0, 29), (10, 51), (20, 74), (30, 94), (45, 111), (55, 119)]
 Y_KNOTS = [(28, 0), (35, 11), (42, 26), (49, 42), (56, 58), (64, 72), (72, 79)]
 
 MOUNTAIN_LINES = [

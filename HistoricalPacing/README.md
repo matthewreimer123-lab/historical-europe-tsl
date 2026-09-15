@@ -3,7 +3,7 @@
 This is a separate Civilization V: Brave New World mod. It can be enabled with
 Historical Europe TSL or used on any normal map.
 
-## Version 2 balance
+## Version 3 balance
 
 | System | Effective setting | Purpose |
 |---|---:|---|
@@ -15,7 +15,7 @@ Historical Europe TSL or used on any normal map.
 | Projects | 85% of vanilla cost | Projects remain substantial commitments |
 | Tile improvements | 80% of vanilla time | Faster physical development |
 | Per-city science/policy penalty | 80% of vanilla | Wide empires remain viable |
-| Flat unhappiness per city | 2 instead of 3 | Less punitive expansion |
+| Flat unhappiness per city | 1 instead of 3 | Sustained territorial expansion |
 | Calendar turns | about 225% of vanilla | More playable turns per historical era |
 
 Population unhappiness, growth, gold, faith, great people, combat strength,
@@ -29,7 +29,7 @@ Copy the entire `HistoricalPacing` folder into:
 Documents\My Games\Sid Meier's Civilization 5\MODS
 ```
 
-Enable **Historical Development Pacing (v 2)** in the Mods menu. Enable
+Enable **Historical Development Pacing (v 3)** in the Mods menu. Enable
 **Historical Europe TSL** separately when you also want the Europe map.
 
 A new game is required after enabling or disabling this mod.
