@@ -68,12 +68,14 @@ The map is deliberately not a uniform geographic projection.
 
 - Mediterranean dry belt, Atlantic temperate belt, continental east, boreal north.
 - Forest, marsh, floodplain, tundra, and hill placement.
+- Deterministic Saharan oases and irregular Mediterranean shallow-water shelves.
 - Navigable and strategically useful river crossings.
 
 ### Pass 4: resources and city-states
 
 - Strategic resources distributed for playability first and geographic flavour second.
 - Luxury regions that promote trade and competition.
+- Additional Mediterranean seafood and two local luxury opportunities per active TSL.
 - City-states placed after major-civilization collision tests.
 
 ## Acceptance tests for v0.1

@@ -49,7 +49,10 @@ scripts/                    local validation tools
 4. Verify both civilizations start correctly in a normal modded-game setup.
 5. Only then add the remaining civilization starts and collision handling.
 
-The current test build is mod version 11. Version 11 guarantees two nearby food
+The current test build is mod version 12. Version 12 expands the Nile valley
+and its three-channel delta, adds Saharan oases and Mediterranean seafood,
+creates irregular shallow-water shelves, and provides two luxury opportunities
+around each active TSL. Version 11 guaranteed two nearby food
 resources for every active major TSL and adds a terrain-valid regional luxury
 and strategic resource package. Version 10 cropped Iceland, the high
 Arctic, the Caspian, Iran, and Mesopotamia; moves the eastern boundary to the

@@ -19,13 +19,13 @@ from matplotlib.colors import ListedColormap
 ROOT = Path(__file__).resolve().parents[1]
 WIDTH, HEIGHT = 96, 60
 MIN_LON, MAX_LON = -12.0, 42.0
-MIN_LAT, MAX_LAT = 28.0, 65.0
+MIN_LAT, MAX_LAT = 26.0, 65.0
 
 # Cropped nonlinear gameplay projection. Iceland, the high Arctic, the Caspian,
 # Iran, and Mesopotamia are outside the canvas; central Europe retains more
 # room per degree than the quieter northern and eastern margins.
 X_KNOTS = [(-12, 0), (-10, 3), (0, 20), (10, 39), (20, 59), (30, 77), (42, 95)]
-Y_KNOTS = [(28, 0), (35, 9), (42, 21), (49, 34), (56, 46), (64, 58), (65, 59)]
+Y_KNOTS = [(26, 0), (35, 12), (42, 23), (49, 35), (56, 47), (64, 58), (65, 59)]
 
 MOUNTAIN_LINES = [
     [(-1.5, 42.7), (1.5, 42.8), (3.0, 42.5)],  # Pyrenees
@@ -83,7 +83,7 @@ RIVER_LINES = {
     "Dniester": [(24.0, 49.0), (26.0, 47.5), (28.5, 46.0), (30.0, 45.5)],
     "Dnieper": [(33.0, 54.5), (31.0, 52.0), (30.5, 50.4), (32.0, 48.0), (34.5, 46.0)],
     "Don": [(38.0, 54.0), (39.5, 51.0), (40.5, 48.0), (39.5, 47.0)],
-    "Nile": [(31.2, 29.0), (31.0, 29.8), (31.1, 30.7), (31.2, 31.4)],
+    "Nile": [(31.2, 27.0), (31.1, 28.2), (31.0, 29.5), (31.0, 30.4), (31.2, 31.5)],
     "Jordan": [(35.6, 33.2), (35.5, 32.3), (35.5, 31.5)],
 }
 
@@ -100,8 +100,10 @@ RIVER_BRANCH_COUNTS = {
 # channel reaches the Mediterranean while western and eastern distributaries
 # split from the lower Nile to form three distinct mouths.
 NILE_DELTA_LINES = {
-    "Nile Rosetta distributary": [(31.1, 30.3), (30.7, 30.7), (30.2, 31.1), (29.8, 31.5)],
-    "Nile Damietta distributary": [(31.1, 30.3), (31.5, 30.7), (31.9, 31.1), (32.3, 31.5)],
+    "Nile Rosetta distributary": [(29.7, 28.6), (29.8, 29.6), (29.8, 30.6), (29.8, 31.5)],
+    # Shifted slightly east at gameplay scale so Civ V does not merge it into
+    # the central channel before the mouth is drawn.
+    "Nile Damietta distributary": [(33.0, 28.6), (33.0, 29.6), (33.0, 30.6), (33.0, 31.5)],
 }
 
 # A restrained historical package is added around each active TSL after Civ V
@@ -109,27 +111,27 @@ NILE_DELTA_LINES = {
 # and guaranteed; these entries add one characteristic luxury and strategic
 # resource where a compatible plot exists within four tiles.
 TSL_RESOURCE_PACKAGES = {
-    "CIVILIZATION_ENGLAND": ("RESOURCE_SALT", "RESOURCE_COAL"),
-    "CIVILIZATION_CELTS": ("RESOURCE_FUR", "RESOURCE_IRON"),
-    "CIVILIZATION_FRANCE": ("RESOURCE_WINE", "RESOURCE_HORSE"),
-    "CIVILIZATION_SPAIN": ("RESOURCE_WINE", "RESOURCE_IRON"),
-    "CIVILIZATION_PORTUGAL": ("RESOURCE_WINE", "RESOURCE_IRON"),
-    "CIVILIZATION_NETHERLANDS": ("RESOURCE_SALT", "RESOURCE_HORSE"),
-    "CIVILIZATION_GERMANY": ("RESOURCE_SALT", "RESOURCE_IRON"),
-    "CIVILIZATION_DENMARK": ("RESOURCE_WHALE", "RESOURCE_IRON"),
-    "CIVILIZATION_SWEDEN": ("RESOURCE_FUR", "RESOURCE_IRON"),
-    "CIVILIZATION_POLAND": ("RESOURCE_SALT", "RESOURCE_HORSE"),
-    "CIVILIZATION_AUSTRIA": ("RESOURCE_SALT", "RESOURCE_IRON"),
-    "CIVILIZATION_VENICE": ("RESOURCE_WINE", "RESOURCE_IRON"),
-    "CIVILIZATION_ROME": ("RESOURCE_WINE", "RESOURCE_IRON"),
-    "CIVILIZATION_GREECE": ("RESOURCE_WINE", "RESOURCE_IRON"),
-    "CIVILIZATION_BYZANTIUM": ("RESOURCE_SILK", "RESOURCE_HORSE"),
-    "CIVILIZATION_OTTOMAN": ("RESOURCE_SPICES", "RESOURCE_HORSE"),
-    "CIVILIZATION_RUSSIA": ("RESOURCE_FUR", "RESOURCE_HORSE"),
-    "CIVILIZATION_HUNS": ("RESOURCE_FUR", "RESOURCE_HORSE"),
-    "CIVILIZATION_CARTHAGE": ("RESOURCE_DYES", "RESOURCE_HORSE"),
-    "CIVILIZATION_MOROCCO": ("RESOURCE_INCENSE", "RESOURCE_HORSE"),
-    "CIVILIZATION_EGYPT": ("RESOURCE_INCENSE", "RESOURCE_HORSE"),
+    "CIVILIZATION_ENGLAND": ("RESOURCE_SALT", "RESOURCE_FUR", "RESOURCE_COAL"),
+    "CIVILIZATION_CELTS": ("RESOURCE_FUR", "RESOURCE_SILVER", "RESOURCE_IRON"),
+    "CIVILIZATION_FRANCE": ("RESOURCE_WINE", "RESOURCE_SALT", "RESOURCE_HORSE"),
+    "CIVILIZATION_SPAIN": ("RESOURCE_WINE", "RESOURCE_GOLD", "RESOURCE_IRON"),
+    "CIVILIZATION_PORTUGAL": ("RESOURCE_WINE", "RESOURCE_GOLD", "RESOURCE_IRON"),
+    "CIVILIZATION_NETHERLANDS": ("RESOURCE_SALT", "RESOURCE_WHALE", "RESOURCE_HORSE"),
+    "CIVILIZATION_GERMANY": ("RESOURCE_SALT", "RESOURCE_WINE", "RESOURCE_IRON"),
+    "CIVILIZATION_DENMARK": ("RESOURCE_WHALE", "RESOURCE_FUR", "RESOURCE_IRON"),
+    "CIVILIZATION_SWEDEN": ("RESOURCE_FUR", "RESOURCE_SILVER", "RESOURCE_IRON"),
+    "CIVILIZATION_POLAND": ("RESOURCE_SALT", "RESOURCE_FUR", "RESOURCE_HORSE"),
+    "CIVILIZATION_AUSTRIA": ("RESOURCE_SALT", "RESOURCE_SILVER", "RESOURCE_IRON"),
+    "CIVILIZATION_VENICE": ("RESOURCE_WINE", "RESOURCE_SILK", "RESOURCE_IRON"),
+    "CIVILIZATION_ROME": ("RESOURCE_WINE", "RESOURCE_MARBLE", "RESOURCE_IRON"),
+    "CIVILIZATION_GREECE": ("RESOURCE_WINE", "RESOURCE_MARBLE", "RESOURCE_IRON"),
+    "CIVILIZATION_BYZANTIUM": ("RESOURCE_SILK", "RESOURCE_WINE", "RESOURCE_HORSE"),
+    "CIVILIZATION_OTTOMAN": ("RESOURCE_SPICES", "RESOURCE_SILK", "RESOURCE_HORSE"),
+    "CIVILIZATION_RUSSIA": ("RESOURCE_FUR", "RESOURCE_SILVER", "RESOURCE_HORSE"),
+    "CIVILIZATION_HUNS": ("RESOURCE_FUR", "RESOURCE_GOLD", "RESOURCE_HORSE"),
+    "CIVILIZATION_CARTHAGE": ("RESOURCE_DYES", "RESOURCE_INCENSE", "RESOURCE_HORSE"),
+    "CIVILIZATION_MOROCCO": ("RESOURCE_INCENSE", "RESOURCE_DYES", "RESOURCE_HORSE"),
+    "CIVILIZATION_EGYPT": ("RESOURCE_INCENSE", "RESOURCE_COTTON", "RESOURCE_HORSE"),
 }
 
 
@@ -237,6 +239,62 @@ def neighbors(x, y):
             yield x + dx, y + dy
 
 
+def is_mediterranean(lon, lat):
+    return -6.0 <= lon <= 42.0 and 29.5 <= lat <= 46.5
+
+
+def build_coast_tiles(coordinates, land):
+    """Create a continuous coast plus irregular Mediterranean shelves."""
+    distances = [[None for _ in range(WIDTH)] for _ in range(HEIGHT)]
+    queue = deque()
+    for y in range(HEIGHT):
+        for x in range(WIDTH):
+            if land[y][x]:
+                distances[y][x] = 0
+                queue.append((x, y))
+    while queue:
+        x, y = queue.popleft()
+        if distances[y][x] >= 3:
+            continue
+        for nx, ny in neighbors(x, y):
+            if not land[ny][nx] and distances[ny][nx] is None:
+                distances[ny][nx] = distances[y][x] + 1
+                queue.append((nx, ny))
+
+    coast = {
+        (x, y)
+        for y in range(HEIGHT)
+        for x in range(WIDTH)
+        if not land[y][x] and distances[y][x] == 1
+    }
+    for y in range(HEIGHT):
+        for x in range(WIDTH):
+            lon, lat = coordinates[y][x]
+            if not land[y][x] and distances[y][x] == 2 and is_mediterranean(lon, lat):
+                if hash01(x, y, 20) < 0.68:
+                    coast.add((x, y))
+    for y in range(HEIGHT):
+        for x in range(WIDTH):
+            lon, lat = coordinates[y][x]
+            if not land[y][x] and distances[y][x] == 3 and is_mediterranean(lon, lat):
+                if hash01(x, y, 21) < 0.22 and any(point in coast for point in neighbors(x, y)):
+                    coast.add((x, y))
+    return coast
+
+
+def carve_waterway(land, geographic_points):
+    """Carve a one-hex navigable channel through coarse source geography."""
+    for (lon_a, lat_a), (lon_b, lat_b) in zip(geographic_points, geographic_points[1:]):
+        ax, ay = project(lon_a, lat_a)
+        bx, by = project(lon_b, lat_b)
+        samples = max(2, math.ceil(math.hypot(bx - ax, by - ay) * 4))
+        for step in range(samples):
+            amount = step / (samples - 1)
+            x = max(0, min(WIDTH - 1, round(ax + (bx - ax) * amount)))
+            y = max(0, min(HEIGHT - 1, round(ay + (by - ay) * amount)))
+            land[y][x] = False
+
+
 def build_grid(source_features):
     coordinates, land = [], []
     for y in range(HEIGHT):
@@ -248,14 +306,24 @@ def build_grid(source_features):
         coordinates.append(coordinate_row)
         land.append(land_row)
 
+    # Natural Earth's coarse polygons close the Turkish Straits at this scale.
+    # Explicitly connect the Aegean, Sea of Marmara, Bosporus, and Black Sea.
+    carve_waterway(land, [
+        (25.8, 39.8), (26.5, 40.2), (27.4, 40.6),
+        (28.3, 40.8), (28.9, 41.1), (29.2, 41.6),
+    ])
+
+    coast = build_coast_tiles(coordinates, land)
+
     plots, terrains, map_features = [], [], []
+    selected_oases = set()
     for y in range(HEIGHT):
         plot_row, terrain_row, feature_row = [], [], []
         for x in range(WIDTH):
             lon, lat = coordinates[y][x]
             if not land[y][x]:
                 plot_row.append("O")
-                terrain_row.append("C" if any(land[ny][nx] for nx, ny in neighbors(x, y)) else "O")
+                terrain_row.append("C" if (x, y) in coast else "O")
                 feature_row.append("N")
                 continue
             relief, jitter = mountain_distance(x, y), hash01(x, y, 1)
@@ -277,6 +345,10 @@ def build_grid(source_features):
                 terrain = "G"
             forest_chance = {"T": 0.34, "P": 0.20, "G": 0.30}.get(terrain, 0)
             feature = "F" if plot != "M" and hash01(x, y, 2) < forest_chance else "N"
+            if terrain == "D" and plot == "L" and all(land[ny][nx] for nx, ny in neighbors(x, y)):
+                if hash01(x, y, 22) < 0.06 and not any(point in selected_oases for point in neighbors(x, y)):
+                    feature = "A"
+                    selected_oases.add((x, y))
             plot_row.append(plot)
             terrain_row.append(terrain)
             feature_row.append(feature)
@@ -284,6 +356,20 @@ def build_grid(source_features):
         terrains.append("".join(terrain_row))
         map_features.append("".join(feature_row))
     return plots, terrains, map_features
+
+
+def build_seafood_locations(plots, terrains):
+    locations = []
+    selected = set()
+    for y in range(HEIGHT):
+        for x in range(WIDTH):
+            lon, lat = inverse_project(x + (0.5 if y % 2 else 0.0), y)
+            if plots[y][x] != "O" or terrains[y][x] != "C" or not is_mediterranean(lon, lat):
+                continue
+            if hash01(x, y, 23) < 0.075 and not any(point in selected for point in neighbors(x, y)):
+                selected.add((x, y))
+                locations.append((x, y))
+    return locations
 
 
 def nearest_land_plot(x, y, plots, maximum_radius=4):
@@ -454,7 +540,7 @@ def load_minor_starts(plots):
     return starts
 
 
-def write_lua(plots, terrains, map_features, starts, minor_starts, river_guides):
+def write_lua(plots, terrains, map_features, starts, minor_starts, river_guides, seafood_locations):
     start_rows = "\n".join(
         f'  {row["civilization_type"]} = {{{row["primary_x"]}, {row["primary_y"]}, '
         f'{row["alternate_x"]}, {row["alternate_y"]}, {row["priority"]}}},'
@@ -471,9 +557,10 @@ def write_lua(plots, terrains, map_features, starts, minor_starts, river_guides)
         for name, points in river_guides
     )
     resource_rows = "\n".join(
-        f'  {civilization} = {{luxury = "{luxury}", strategic = "{strategic}"}},'
-        for civilization, (luxury, strategic) in TSL_RESOURCE_PACKAGES.items()
+        f'  {civilization} = {{primaryLuxury = "{primary}", secondaryLuxury = "{secondary}", strategic = "{strategic}"}},'
+        for civilization, (primary, secondary, strategic) in TSL_RESOURCE_PACKAGES.items()
     )
+    seafood_rows = ", ".join(f"{{{x}, {y}}}" for x, y in seafood_locations)
     script = f'''-- Generated by scripts/generate_map.py. Do not edit by hand.
 include("MapGenerator")
 include("AssignStartingPlots")
@@ -496,6 +583,7 @@ local MINOR_TSL = {{
 local TSL_RESOURCE_PACKAGES = {{
 {resource_rows}
 }}
+local MEDITERRANEAN_SEAFOOD = {{{seafood_rows}}}
 local RIVER_GUIDES = {{
 {river_rows}
 }}
@@ -548,7 +636,9 @@ function GenerateTerrain()
 end
 
 function AddFeatures()
-  local decoded = decodeRows(FEATURE_ROWS, {{N = -1, F = GameInfoTypes.FEATURE_FOREST}})
+  local decoded = decodeRows(FEATURE_ROWS, {{
+    N = -1, F = GameInfoTypes.FEATURE_FOREST, A = GameInfoTypes.FEATURE_OASIS
+  }})
   for i = 0, Map.GetNumPlots() - 1 do
     if decoded[i + 1] ~= -1 then Map.GetPlotByIndex(i):SetFeatureType(decoded[i + 1], -1) end
   end
@@ -710,10 +800,10 @@ local function guaranteeStartingFood(startPlot)
 end
 
 
-local function placeRegionalResource(startPlot, resourceType, amount)
+local function placeRegionalResource(startPlot, resourceType, amount, maximumDistance)
   local resourceID = GameInfoTypes[resourceType]
   if not resourceID then return false end
-  for _, candidate in ipairs(nearbyPlots(startPlot, 4)) do
+  for _, candidate in ipairs(nearbyPlots(startPlot, maximumDistance)) do
     local plot = candidate.plot
     if plot:GetResourceType(-1) == -1 and plot:CanHaveResource(resourceID, true) then
       plot:SetResourceType(resourceID, amount)
@@ -724,14 +814,30 @@ local function placeRegionalResource(startPlot, resourceType, amount)
 end
 
 
-local function placeRegionalResourceWithFallbacks(startPlot, preferredType, amount, fallbacks)
-  if placeRegionalResource(startPlot, preferredType, amount) then return preferredType end
+local function placeRegionalResourceWithFallbacks(startPlot, preferredType, amount, maximumDistance, fallbacks, excludedType)
+  if preferredType ~= excludedType and placeRegionalResource(startPlot, preferredType, amount, maximumDistance) then
+    return preferredType
+  end
   for _, resourceType in ipairs(fallbacks) do
-    if resourceType ~= preferredType and placeRegionalResource(startPlot, resourceType, amount) then
+    if resourceType ~= preferredType and resourceType ~= excludedType and placeRegionalResource(startPlot, resourceType, amount, maximumDistance) then
       return resourceType
     end
   end
   return nil
+end
+
+
+local function placeMediterraneanSeafood()
+  local fish = GameInfoTypes.RESOURCE_FISH
+  local placed = 0
+  for _, position in ipairs(MEDITERRANEAN_SEAFOOD) do
+    local plot = Map.GetPlot(position[1], position[2])
+    if plot and plot:GetResourceType(-1) == -1 and plot:CanHaveResource(fish, true) then
+      plot:SetResourceType(fish, 1)
+      placed = placed + 1
+    end
+  end
+  print("Historical Europe TSL: placed " .. placed .. " additional Mediterranean seafood resources")
 end
 
 
@@ -745,12 +851,17 @@ local function placeTSLResources()
         local foodCount = guaranteeStartingFood(startPlot)
         local package = civilization and TSL_RESOURCE_PACKAGES[civilization.Type]
         if package then
-          placeRegionalResourceWithFallbacks(startPlot, package.luxury, 1, {{
-            "RESOURCE_WINE", "RESOURCE_SALT", "RESOURCE_INCENSE", "RESOURCE_FUR"
-          }})
-          placeRegionalResourceWithFallbacks(startPlot, package.strategic, 2, {{
+          local firstLuxury = placeRegionalResourceWithFallbacks(startPlot, package.primaryLuxury, 1, 4, {{
+            "RESOURCE_WINE", "RESOURCE_SALT", "RESOURCE_INCENSE", "RESOURCE_FUR",
+            "RESOURCE_SILVER", "RESOURCE_GOLD", "RESOURCE_MARBLE"
+          }}, nil)
+          placeRegionalResourceWithFallbacks(startPlot, package.secondaryLuxury, 1, 5, {{
+            "RESOURCE_WINE", "RESOURCE_SALT", "RESOURCE_INCENSE", "RESOURCE_FUR",
+            "RESOURCE_SILVER", "RESOURCE_GOLD", "RESOURCE_MARBLE"
+          }}, firstLuxury)
+          placeRegionalResourceWithFallbacks(startPlot, package.strategic, 2, 4, {{
             "RESOURCE_HORSE", "RESOURCE_IRON", "RESOURCE_COAL"
-          }})
+          }}, nil)
         end
         print("Historical Europe TSL: guaranteed " .. foodCount .. " food resources for " .. (civilization and civilization.Type or playerID))
       end
@@ -811,6 +922,7 @@ function StartPlotSystem()
   database:BalanceAndAssign()
   database:PlaceNaturalWonders()
   database:PlaceResourcesAndCityStates()
+  placeMediterraneanSeafood()
   local occupied = assignTSL()
   placeTSLResources()
   assignMinorTSL(occupied)
@@ -849,7 +961,7 @@ def write_starts_xml(starts):
     tree.write(ROOT / "XML/MajorStarts.xml", encoding="utf-8", xml_declaration=True)
 
 
-def write_preview(plots, terrains, river_guides):
+def write_preview(plots, terrains, map_features, river_guides, seafood_locations):
     codes = {
         ("O", "O"): 0, ("O", "C"): 1, ("L", "G"): 2, ("L", "P"): 3, ("L", "D"): 4,
         ("L", "T"): 5, ("L", "S"): 6, ("H", "G"): 7, ("H", "P"): 7, ("H", "D"): 7,
@@ -862,6 +974,11 @@ def write_preview(plots, terrains, river_guides):
     axis.imshow(image, origin="lower", interpolation="nearest", cmap=ListedColormap(colors), vmin=0, vmax=8)
     river_points = [point for _, guide in river_guides for point in guide]
     axis.scatter([point[0] for point in river_points], [point[1] for point in river_points], s=3, c="#42bff5")
+    oasis_points = [(x, y) for y, row in enumerate(map_features) for x, value in enumerate(row) if value == "A"]
+    if oasis_points:
+        axis.scatter([point[0] for point in oasis_points], [point[1] for point in oasis_points], s=12, c="#2f9e73", marker="o")
+    if seafood_locations:
+        axis.scatter([point[0] for point in seafood_locations], [point[1] for point in seafood_locations], s=9, c="#a9e7ff", marker="^")
     axis.set(title=f"Historical Europe TSL — generated {WIDTH}×{HEIGHT} topography", xlabel="X", ylabel="Y")
     axis.set_aspect("equal")
     figure.tight_layout()
@@ -877,13 +994,16 @@ def main():
     starts = load_starts(plots)
     minor_starts = load_minor_starts(plots)
     river_guides = build_river_guides(plots)
-    write_lua(plots, terrains, map_features, starts, minor_starts, river_guides)
+    seafood_locations = build_seafood_locations(plots, terrains)
+    write_lua(plots, terrains, map_features, starts, minor_starts, river_guides, seafood_locations)
     write_starts(starts)
     write_starts_xml(starts)
-    write_preview(plots, terrains, river_guides)
+    write_preview(plots, terrains, map_features, river_guides, seafood_locations)
     land_count = sum(row.count("L") + row.count("H") + row.count("M") for row in plots)
     river_tiles = sum(len(guide) for _, guide in river_guides)
-    print(f"Generated {WIDTH}x{HEIGHT} map with {land_count} land tiles and {len(river_guides)} guided rivers ({river_tiles} waypoints).")
+    oasis_count = sum(row.count("A") for row in map_features)
+    print(f"Generated {WIDTH}x{HEIGHT} map with {land_count} land tiles, {len(river_guides)} guided rivers "
+          f"({river_tiles} waypoints), {oasis_count} oases, and {len(seafood_locations)} Mediterranean seafood anchors.")
 
 
 if __name__ == "__main__":

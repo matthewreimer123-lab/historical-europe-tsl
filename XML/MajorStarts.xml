@@ -1,26 +1,26 @@
 <?xml version='1.0' encoding='utf-8'?>
 <GameData>
   <HistoricalEuropeCivilizationStarts>
-    <Row CivilizationType="CIVILIZATION_ENGLAND" PrimaryX="20" PrimaryY="38" AlternateX="17" AlternateY="45" Priority="10" Region="British Isles" />
-    <Row CivilizationType="CIVILIZATION_CELTS" PrimaryX="17" PrimaryY="45" AlternateX="9" AlternateY="41" Priority="20" Region="British Isles" />
-    <Row CivilizationType="CIVILIZATION_FRANCE" PrimaryX="24" PrimaryY="34" AlternateX="19" AlternateY="26" Priority="10" Region="France" />
-    <Row CivilizationType="CIVILIZATION_SPAIN" PrimaryX="14" PrimaryY="18" AlternateX="19" AlternateY="17" Priority="10" Region="Iberia" />
-    <Row CivilizationType="CIVILIZATION_PORTUGAL" PrimaryX="4" PrimaryY="15" AlternateX="5" AlternateY="20" Priority="10" Region="Iberia" />
-    <Row CivilizationType="CIVILIZATION_NETHERLANDS" PrimaryX="29" PrimaryY="40" AlternateX="29" AlternateY="39" Priority="10" Region="Low Countries" />
-    <Row CivilizationType="CIVILIZATION_GERMANY" PrimaryX="46" PrimaryY="40" AlternateX="42" AlternateY="32" Priority="10" Region="Germany" />
-    <Row CivilizationType="CIVILIZATION_DENMARK" PrimaryX="43" PrimaryY="45" AlternateX="40" AlternateY="46" Priority="10" Region="Denmark" />
-    <Row CivilizationType="CIVILIZATION_SWEDEN" PrimaryX="54" PrimaryY="51" AlternateX="44" AlternateY="49" Priority="10" Region="Scandinavia" />
-    <Row CivilizationType="CIVILIZATION_POLAND" PrimaryX="61" PrimaryY="40" AlternateX="59" AlternateY="36" Priority="10" Region="Poland" />
-    <Row CivilizationType="CIVILIZATION_AUSTRIA" PrimaryX="52" PrimaryY="33" AlternateX="48" AlternateY="33" Priority="10" Region="Danube" />
-    <Row CivilizationType="CIVILIZATION_VENICE" PrimaryX="43" PrimaryY="27" AlternateX="37" AlternateY="27" Priority="10" Region="Northern Italy" />
-    <Row CivilizationType="CIVILIZATION_ROME" PrimaryX="43" PrimaryY="21" AlternateX="47" AlternateY="19" Priority="10" Region="Italy" />
-    <Row CivilizationType="CIVILIZATION_GREECE" PrimaryX="66" PrimaryY="14" AlternateX="64" AlternateY="19" Priority="10" Region="Greece" />
-    <Row CivilizationType="CIVILIZATION_BYZANTIUM" PrimaryX="75" PrimaryY="19" AlternateX="65" AlternateY="21" Priority="10" Region="Thrace" />
-    <Row CivilizationType="CIVILIZATION_OTTOMAN" PrimaryX="75" PrimaryY="19" AlternateX="75" AlternateY="18" Priority="20" Region="Anatolia" />
-    <Row CivilizationType="CIVILIZATION_RUSSIA" PrimaryX="86" PrimaryY="46" AlternateX="73" AlternateY="52" Priority="10" Region="European Russia" />
-    <Row CivilizationType="CIVILIZATION_HUNS" PrimaryX="57" PrimaryY="31" AlternateX="78" AlternateY="36" Priority="30" Region="Carpathian Basin" />
-    <Row CivilizationType="CIVILIZATION_CARTHAGE" PrimaryX="40" PrimaryY="12" AlternateX="38" AlternateY="8" Priority="10" Region="North Africa" />
-    <Row CivilizationType="CIVILIZATION_MOROCCO" PrimaryX="6" PrimaryY="5" AlternateX="8" AlternateY="7" Priority="10" Region="North Africa" />
-    <Row CivilizationType="CIVILIZATION_EGYPT" PrimaryX="79" PrimaryY="2" AlternateX="77" AlternateY="4" Priority="10" Region="Nile Valley" />
+    <Row CivilizationType="CIVILIZATION_ENGLAND" PrimaryX="20" PrimaryY="39" AlternateX="17" AlternateY="46" Priority="10" Region="British Isles" />
+    <Row CivilizationType="CIVILIZATION_CELTS" PrimaryX="17" PrimaryY="46" AlternateX="9" AlternateY="42" Priority="20" Region="British Isles" />
+    <Row CivilizationType="CIVILIZATION_FRANCE" PrimaryX="24" PrimaryY="35" AlternateX="19" AlternateY="28" Priority="10" Region="France" />
+    <Row CivilizationType="CIVILIZATION_SPAIN" PrimaryX="14" PrimaryY="21" AlternateX="19" AlternateY="19" Priority="10" Region="Iberia" />
+    <Row CivilizationType="CIVILIZATION_PORTUGAL" PrimaryX="4" PrimaryY="18" AlternateX="5" AlternateY="22" Priority="10" Region="Iberia" />
+    <Row CivilizationType="CIVILIZATION_NETHERLANDS" PrimaryX="29" PrimaryY="41" AlternateX="29" AlternateY="40" Priority="10" Region="Low Countries" />
+    <Row CivilizationType="CIVILIZATION_GERMANY" PrimaryX="46" PrimaryY="41" AlternateX="42" AlternateY="34" Priority="10" Region="Germany" />
+    <Row CivilizationType="CIVILIZATION_DENMARK" PrimaryX="44" PrimaryY="46" AlternateX="39" AlternateY="47" Priority="10" Region="Denmark" />
+    <Row CivilizationType="CIVILIZATION_SWEDEN" PrimaryX="54" PrimaryY="52" AlternateX="44" AlternateY="49" Priority="10" Region="Scandinavia" />
+    <Row CivilizationType="CIVILIZATION_POLAND" PrimaryX="61" PrimaryY="41" AlternateX="59" AlternateY="37" Priority="10" Region="Poland" />
+    <Row CivilizationType="CIVILIZATION_AUSTRIA" PrimaryX="52" PrimaryY="34" AlternateX="48" AlternateY="34" Priority="10" Region="Danube" />
+    <Row CivilizationType="CIVILIZATION_VENICE" PrimaryX="43" PrimaryY="29" AlternateX="37" AlternateY="29" Priority="10" Region="Northern Italy" />
+    <Row CivilizationType="CIVILIZATION_ROME" PrimaryX="43" PrimaryY="23" AlternateX="48" AlternateY="21" Priority="10" Region="Italy" />
+    <Row CivilizationType="CIVILIZATION_GREECE" PrimaryX="65" PrimaryY="17" AlternateX="64" AlternateY="21" Priority="10" Region="Greece" />
+    <Row CivilizationType="CIVILIZATION_BYZANTIUM" PrimaryX="75" PrimaryY="20" AlternateX="65" AlternateY="23" Priority="10" Region="Thrace" />
+    <Row CivilizationType="CIVILIZATION_OTTOMAN" PrimaryX="75" PrimaryY="20" AlternateX="81" AlternateY="20" Priority="20" Region="Anatolia" />
+    <Row CivilizationType="CIVILIZATION_RUSSIA" PrimaryX="86" PrimaryY="47" AlternateX="73" AlternateY="52" Priority="10" Region="European Russia" />
+    <Row CivilizationType="CIVILIZATION_HUNS" PrimaryX="57" PrimaryY="32" AlternateX="78" AlternateY="37" Priority="30" Region="Carpathian Basin" />
+    <Row CivilizationType="CIVILIZATION_CARTHAGE" PrimaryX="40" PrimaryY="15" AlternateX="38" AlternateY="11" Priority="10" Region="North Africa" />
+    <Row CivilizationType="CIVILIZATION_MOROCCO" PrimaryX="6" PrimaryY="8" AlternateX="8" AlternateY="11" Priority="10" Region="North Africa" />
+    <Row CivilizationType="CIVILIZATION_EGYPT" PrimaryX="79" PrimaryY="5" AlternateX="77" AlternateY="7" Priority="10" Region="Nile Valley" />
   </HistoricalEuropeCivilizationStarts>
 </GameData>
