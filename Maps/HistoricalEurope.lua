@@ -236,6 +236,29 @@ local MINOR_TSL = {
   MINOR_CIV_VALLETTA = {49, 12},
   MINOR_CIV_PRAGUE = {48, 36},
 }
+local TSL_RESOURCE_PACKAGES = {
+  CIVILIZATION_ENGLAND = {luxury = "RESOURCE_SALT", strategic = "RESOURCE_COAL"},
+  CIVILIZATION_CELTS = {luxury = "RESOURCE_FUR", strategic = "RESOURCE_IRON"},
+  CIVILIZATION_FRANCE = {luxury = "RESOURCE_WINE", strategic = "RESOURCE_HORSE"},
+  CIVILIZATION_SPAIN = {luxury = "RESOURCE_WINE", strategic = "RESOURCE_IRON"},
+  CIVILIZATION_PORTUGAL = {luxury = "RESOURCE_WINE", strategic = "RESOURCE_IRON"},
+  CIVILIZATION_NETHERLANDS = {luxury = "RESOURCE_SALT", strategic = "RESOURCE_HORSE"},
+  CIVILIZATION_GERMANY = {luxury = "RESOURCE_SALT", strategic = "RESOURCE_IRON"},
+  CIVILIZATION_DENMARK = {luxury = "RESOURCE_WHALE", strategic = "RESOURCE_IRON"},
+  CIVILIZATION_SWEDEN = {luxury = "RESOURCE_FUR", strategic = "RESOURCE_IRON"},
+  CIVILIZATION_POLAND = {luxury = "RESOURCE_SALT", strategic = "RESOURCE_HORSE"},
+  CIVILIZATION_AUSTRIA = {luxury = "RESOURCE_SALT", strategic = "RESOURCE_IRON"},
+  CIVILIZATION_VENICE = {luxury = "RESOURCE_WINE", strategic = "RESOURCE_IRON"},
+  CIVILIZATION_ROME = {luxury = "RESOURCE_WINE", strategic = "RESOURCE_IRON"},
+  CIVILIZATION_GREECE = {luxury = "RESOURCE_WINE", strategic = "RESOURCE_IRON"},
+  CIVILIZATION_BYZANTIUM = {luxury = "RESOURCE_SILK", strategic = "RESOURCE_HORSE"},
+  CIVILIZATION_OTTOMAN = {luxury = "RESOURCE_SPICES", strategic = "RESOURCE_HORSE"},
+  CIVILIZATION_RUSSIA = {luxury = "RESOURCE_FUR", strategic = "RESOURCE_HORSE"},
+  CIVILIZATION_HUNS = {luxury = "RESOURCE_FUR", strategic = "RESOURCE_HORSE"},
+  CIVILIZATION_CARTHAGE = {luxury = "RESOURCE_DYES", strategic = "RESOURCE_HORSE"},
+  CIVILIZATION_MOROCCO = {luxury = "RESOURCE_INCENSE", strategic = "RESOURCE_HORSE"},
+  CIVILIZATION_EGYPT = {luxury = "RESOURCE_INCENSE", strategic = "RESOURCE_HORSE"},
+}
 local RIVER_GUIDES = {
   {name = "Thames", points = {{17, 39}, {18, 39}, {18, 38}, {19, 38}, {20, 38}, {21, 38}}},
   {name = "Tagus", points = {{18, 18}, {17, 18}, {16, 18}, {15, 18}, {14, 17}, {13, 17}, {12, 17}, {11, 17}, {10, 17}, {9, 17}, {8, 17}, {8, 16}, {7, 16}, {6, 16}, {5, 16}, {5, 15}}},
@@ -408,6 +431,142 @@ local function assignTSL()
 end
 
 
+local FOOD_RESOURCES = {
+  [GameInfoTypes.RESOURCE_WHEAT] = true,
+  [GameInfoTypes.RESOURCE_COW] = true,
+  [GameInfoTypes.RESOURCE_SHEEP] = true,
+  [GameInfoTypes.RESOURCE_DEER] = true,
+  [GameInfoTypes.RESOURCE_FISH] = true
+}
+
+
+local function isNaturalWonder(plot)
+  local featureID = plot:GetFeatureType()
+  if featureID == -1 then return false end
+  local feature = GameInfo.Features[featureID]
+  return feature and (feature.NaturalWonder == true or feature.NaturalWonder == 1)
+end
+
+
+local function nearbyPlots(startPlot, maximumDistance)
+  local candidates = {}
+  local startX, startY = startPlot:GetX(), startPlot:GetY()
+  for y = math.max(0, startY - maximumDistance), math.min(HEIGHT - 1, startY + maximumDistance) do
+    for x = math.max(0, startX - maximumDistance), math.min(WIDTH - 1, startX + maximumDistance) do
+      local distance = Map.PlotDistance(startX, startY, x, y)
+      local plot = Map.GetPlot(x, y)
+      if distance > 0 and distance <= maximumDistance and plot and not plot:IsMountain() and not isNaturalWonder(plot) then
+        candidates[#candidates + 1] = {plot = plot, distance = distance, x = x, y = y}
+      end
+    end
+  end
+  table.sort(candidates, function(a, b)
+    if a.distance ~= b.distance then return a.distance < b.distance end
+    if a.y ~= b.y then return a.y < b.y end
+    return a.x < b.x
+  end)
+  return candidates
+end
+
+
+local function preferredFoodResource(plot)
+  if plot:IsWater() then
+    if plot:GetTerrainType() == GameInfoTypes.TERRAIN_COAST then return GameInfoTypes.RESOURCE_FISH end
+    return nil
+  end
+  if plot:IsHills() then return GameInfoTypes.RESOURCE_SHEEP end
+  if plot:GetFeatureType() == GameInfoTypes.FEATURE_FOREST then return GameInfoTypes.RESOURCE_DEER end
+  local terrain = plot:GetTerrainType()
+  if terrain == GameInfoTypes.TERRAIN_GRASS then return GameInfoTypes.RESOURCE_COW end
+  if terrain == GameInfoTypes.TERRAIN_TUNDRA then return GameInfoTypes.RESOURCE_DEER end
+  return GameInfoTypes.RESOURCE_WHEAT
+end
+
+
+local function guaranteeStartingFood(startPlot)
+  local candidates = nearbyPlots(startPlot, 2)
+  local foodCount = 0
+  for _, candidate in ipairs(candidates) do
+    if FOOD_RESOURCES[candidate.plot:GetResourceType(-1)] then foodCount = foodCount + 1 end
+  end
+  for _, candidate in ipairs(candidates) do
+    if foodCount >= 2 then break end
+    local plot = candidate.plot
+    if plot:GetResourceType(-1) == -1 then
+      local resourceID = preferredFoodResource(plot)
+      if resourceID and plot:CanHaveResource(resourceID, true) then
+        plot:SetResourceType(resourceID, 1)
+        foodCount = foodCount + 1
+      end
+    end
+  end
+  -- The terrain-based choices above are valid Civ V combinations. This final
+  -- fallback makes the food guarantee robust if normal placement restrictions
+  -- reject every remaining empty plot because of nearby resources.
+  for _, candidate in ipairs(candidates) do
+    if foodCount >= 2 then break end
+    local plot = candidate.plot
+    if plot:GetResourceType(-1) == -1 then
+      local resourceID = preferredFoodResource(plot)
+      if resourceID then
+        plot:SetResourceType(resourceID, 1)
+        foodCount = foodCount + 1
+      end
+    end
+  end
+  return foodCount
+end
+
+
+local function placeRegionalResource(startPlot, resourceType, amount)
+  local resourceID = GameInfoTypes[resourceType]
+  if not resourceID then return false end
+  for _, candidate in ipairs(nearbyPlots(startPlot, 4)) do
+    local plot = candidate.plot
+    if plot:GetResourceType(-1) == -1 and plot:CanHaveResource(resourceID, true) then
+      plot:SetResourceType(resourceID, amount)
+      return true
+    end
+  end
+  return false
+end
+
+
+local function placeRegionalResourceWithFallbacks(startPlot, preferredType, amount, fallbacks)
+  if placeRegionalResource(startPlot, preferredType, amount) then return preferredType end
+  for _, resourceType in ipairs(fallbacks) do
+    if resourceType ~= preferredType and placeRegionalResource(startPlot, resourceType, amount) then
+      return resourceType
+    end
+  end
+  return nil
+end
+
+
+local function placeTSLResources()
+  for playerID = 0, GameDefines.MAX_MAJOR_CIVS - 1 do
+    local player = Players[playerID]
+    if player and player:IsEverAlive() then
+      local startPlot = player:GetStartingPlot()
+      local civilization = GameInfo.Civilizations[player:GetCivilizationType()]
+      if startPlot then
+        local foodCount = guaranteeStartingFood(startPlot)
+        local package = civilization and TSL_RESOURCE_PACKAGES[civilization.Type]
+        if package then
+          placeRegionalResourceWithFallbacks(startPlot, package.luxury, 1, {
+            "RESOURCE_WINE", "RESOURCE_SALT", "RESOURCE_INCENSE", "RESOURCE_FUR"
+          })
+          placeRegionalResourceWithFallbacks(startPlot, package.strategic, 2, {
+            "RESOURCE_HORSE", "RESOURCE_IRON", "RESOURCE_COAL"
+          })
+        end
+        print("Historical Europe TSL: guaranteed " .. foodCount .. " food resources for " .. (civilization and civilization.Type or playerID))
+      end
+    end
+  end
+end
+
+
 local function farEnoughFromStarts(x, y, occupied, minimumDistance)
   for _, position in ipairs(occupied) do
     if Map.PlotDistance(x, y, position[1], position[2]) < minimumDistance then return false end
@@ -461,5 +620,6 @@ function StartPlotSystem()
   database:PlaceNaturalWonders()
   database:PlaceResourcesAndCityStates()
   local occupied = assignTSL()
+  placeTSLResources()
   assignMinorTSL(occupied)
 end

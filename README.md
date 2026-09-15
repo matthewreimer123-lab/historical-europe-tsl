@@ -49,7 +49,9 @@ scripts/                    local validation tools
 4. Verify both civilizations start correctly in a normal modded-game setup.
 5. Only then add the remaining civilization starts and collision handling.
 
-The current test build is mod version 10. Version 10 crops Iceland, the high
+The current test build is mod version 11. Version 11 guarantees two nearby food
+resources for every active major TSL and adds a terrain-valid regional luxury
+and strategic resource package. Version 10 cropped Iceland, the high
 Arctic, the Caspian, Iran, and Mesopotamia; moves the eastern boundary to the
 eastern Black Sea; and narrows Scandinavia. Version 9 added deterministic
 tributaries to every river system and gives the Nile a three-mouth delta.
