@@ -43,11 +43,11 @@ scripts/                    local validation tools
 4. Verify both civilizations start correctly in a normal modded-game setup.
 5. Only then add the remaining civilization starts and collision handling.
 
-The current test build is mod version 3. Version 3 loads Civ V's standard
-map-generation framework before generating the map, fixing an initialization
-failure that could end the game immediately with a defeat screen. Version 2
-added the required `MapScripts` database registration so the generated Lua map
-appears in the normal map-type selector.
+The current test build is mod version 4. Version 4 replaces randomly generated
+rivers with fixed geographic river corridors, improves Morocco's terrain, and
+adds true starts for 25 European and regional city-states with collision
+avoidance. Version 3 fixed map initialization, while version 2 added the
+required `MapScripts` registration.
 
 ## Validation
 

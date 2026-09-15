@@ -7,6 +7,7 @@ import csv
 import json
 import math
 import xml.etree.ElementTree as ET
+from collections import deque
 from pathlib import Path
 
 import matplotlib
@@ -26,12 +27,38 @@ MOUNTAIN_LINES = [
     [(-1.5, 42.7), (1.5, 42.8), (3.0, 42.5)],  # Pyrenees
     [(5.5, 44.5), (8.0, 46.0), (11.0, 46.5), (14.5, 46.2), (16.0, 47.0)],  # Alps
     [(7.0, 44.0), (10.0, 43.0), (13.5, 42.0), (16.0, 40.0)],  # Apennines
-    [(17.0, 48.0), (20.0, 49.0), (23.5, 48.0), (25.5, 46.0), (24.0, 44.0)],  # Carpathians
+    [(17.0, 49.2), (20.0, 49.8), (23.5, 48.5), (25.5, 46.0), (24.5, 44.2)],  # Carpathian arc
     [(14.0, 66.0), (10.0, 63.0), (8.0, 60.0), (7.0, 57.5)],  # Scandinavian range
     [(19.0, 43.5), (23.0, 42.5), (27.0, 42.0)],  # Balkans
     [(38.0, 43.0), (43.0, 42.5), (48.0, 42.0)],  # Caucasus
     [(53.0, 64.0), (55.0, 59.0), (55.0, 54.0), (54.0, 50.0)],  # Ural edge
+    [(-10.0, 31.2), (-7.5, 32.0), (-5.0, 33.0), (-2.0, 34.5)],  # Atlas
 ]
+
+# Simplified geographic centerlines, ordered roughly from source to mouth.
+# They are converted to Civ V hex edges after the fixed land grid is built.
+RIVER_LINES = {
+    "Tagus": [(-1.0, 40.3), (-3.0, 40.0), (-5.5, 39.6), (-7.5, 39.2), (-9.0, 38.7)],
+    "Ebro": [(-3.0, 42.8), (-1.5, 42.4), (0.0, 41.8), (1.2, 41.2), (0.8, 40.8)],
+    "Guadalquivir": [(-4.8, 38.0), (-4.3, 37.6), (-5.3, 37.2), (-6.3, 36.9)],
+    "Tensift": [(-6.6, 31.7), (-7.8, 31.6), (-9.2, 31.5)],
+    "Loire": [(4.0, 45.8), (2.8, 46.4), (1.0, 47.0), (-0.8, 47.2), (-2.0, 47.3)],
+    "Seine": [(5.0, 47.6), (3.2, 48.4), (2.35, 48.9), (0.2, 49.4)],
+    "Rhone": [(8.3, 46.6), (6.9, 46.1), (5.0, 45.0), (4.8, 43.4)],
+    "Rhine": [(9.0, 46.6), (7.8, 48.0), (7.5, 50.0), (6.5, 51.5), (5.0, 52.0)],
+    "Elbe": [(15.5, 50.7), (13.7, 51.2), (12.0, 52.2), (10.0, 53.6), (8.8, 54.0)],
+    "Po": [(7.0, 44.7), (9.0, 45.0), (11.0, 45.1), (13.0, 44.9)],
+    "Danube": [(8.2, 48.0), (11.8, 48.5), (14.5, 48.3), (16.4, 48.2), (19.1, 47.5), (22.5, 45.5), (26.0, 44.5), (29.5, 45.2)],
+    "Vistula": [(19.0, 49.5), (19.8, 51.0), (20.8, 52.5), (19.0, 54.4)],
+    "Dniester": [(24.0, 49.0), (26.0, 47.5), (28.5, 46.0), (30.0, 45.5)],
+    "Dnieper": [(33.0, 54.5), (31.0, 52.0), (30.5, 50.4), (32.0, 48.0), (34.5, 46.0)],
+    "Don": [(38.0, 54.0), (39.5, 51.0), (40.5, 48.0), (39.5, 47.0)],
+    "Volga": [(37.0, 57.0), (41.0, 55.5), (45.0, 52.0), (48.0, 48.0), (48.5, 45.0)],
+    "Nile": [(31.2, 28.2), (31.0, 29.5), (31.1, 30.7), (31.2, 31.4)],
+    "Jordan": [(35.6, 33.2), (35.5, 32.3), (35.5, 31.5)],
+    "Euphrates": [(38.0, 38.5), (40.0, 36.5), (42.0, 34.0), (44.5, 32.0), (47.0, 30.5)],
+    "Tigris": [(42.5, 38.0), (43.5, 36.0), (44.0, 34.0), (46.0, 31.5)],
+}
 
 
 def interpolate(value, knots):
@@ -141,6 +168,8 @@ def build_grid(source_features):
                 terrain = "S"
             elif lat >= 62:
                 terrain = "T"
+            elif -10.8 <= lon <= -4.0 and 30.0 <= lat <= 35.5:
+                terrain = "P"
             elif lat < 35.3 and lon < 34:
                 terrain = "D"
             elif lat < 42 or lon > 30 or lat > 57:
@@ -158,6 +187,71 @@ def build_grid(source_features):
     return plots, terrains, map_features
 
 
+def nearest_land_plot(x, y, plots, maximum_radius=4):
+    candidates = []
+    for candidate_y in range(max(0, y - maximum_radius), min(HEIGHT, y + maximum_radius + 1)):
+        for candidate_x in range(max(0, x - maximum_radius), min(WIDTH, x + maximum_radius + 1)):
+            if plots[candidate_y][candidate_x] in ("L", "H"):
+                candidates.append((math.hypot(candidate_x - x, candidate_y - y), candidate_y, candidate_x))
+    if not candidates:
+        return None
+    _, candidate_y, candidate_x = min(candidates)
+    return candidate_x, candidate_y
+
+
+def land_path(start, goal, plots, maximum_steps=18):
+    queue = deque([(start, [start])])
+    visited = {start}
+    while queue:
+        current, path = queue.popleft()
+        if current == goal:
+            return path
+        if len(path) >= maximum_steps:
+            continue
+        for candidate in neighbors(*current):
+            if candidate not in visited and plots[candidate[1]][candidate[0]] in ("L", "H"):
+                visited.add(candidate)
+                queue.append((candidate, path + [candidate]))
+    return []
+
+
+def stored_river_edge(a, b):
+    ax, ay = a
+    bx, by = b
+    if by == ay:
+        return (ax, ay, "W") if bx < ax else (bx, by, "W")
+    if by > ay:
+        northwest_dx = -1 if ay % 2 == 0 else 0
+        return (ax, ay, "NW" if bx - ax == northwest_dx else "NE")
+    return stored_river_edge(b, a)
+
+
+def build_river_edges(plots):
+    edges = set()
+    for points in RIVER_LINES.values():
+        route = []
+        for (lon_a, lat_a), (lon_b, lat_b) in zip(points, points[1:]):
+            ax, ay = project(lon_a, lat_a)
+            bx, by = project(lon_b, lat_b)
+            samples = max(2, math.ceil(math.hypot(bx - ax, by - ay) * 2))
+            for step in range(samples):
+                amount = step / (samples - 1)
+                snapped = nearest_land_plot(round(ax + (bx - ax) * amount), round(ay + (by - ay) * amount), plots)
+                if snapped and (not route or snapped != route[-1]):
+                    route.append(snapped)
+        connected = []
+        for target in route:
+            if not connected:
+                connected.append(target)
+                continue
+            segment = land_path(connected[-1], target, plots)
+            if segment:
+                connected.extend(segment[1:])
+        for a, b in zip(connected, connected[1:]):
+            edges.add(stored_river_edge(a, b))
+    return sorted(edges, key=lambda edge: (edge[1], edge[0], edge[2]))
+
+
 def nearest_start_plot(x, y, plots, maximum_radius=6):
     candidates = []
     for candidate_y in range(max(0, y - maximum_radius), min(HEIGHT, y + maximum_radius + 1)):
@@ -169,6 +263,19 @@ def nearest_start_plot(x, y, plots, maximum_radius=6):
         raise ValueError(f"No passable land within {maximum_radius} tiles of ({x}, {y})")
     _, candidate_y, candidate_x = min(candidates)
     return candidate_x, candidate_y
+
+
+def improve_start_region(lon, lat, plots, terrains, map_features, radius):
+    projected = tuple(map(round, project(lon, lat)))
+    center_x, center_y = nearest_start_plot(*projected, plots)
+    for y in range(max(0, center_y - radius), min(HEIGHT, center_y + radius + 1)):
+        for x in range(max(0, center_x - radius), min(WIDTH, center_x + radius + 1)):
+            if math.hypot(x - center_x, y - center_y) <= radius and plots[y][x] != "O":
+                if plots[y][x] == "M":
+                    plots[y] = plots[y][:x] + "H" + plots[y][x + 1:]
+                terrains[y] = terrains[y][:x] + "P" + terrains[y][x + 1:]
+                map_features[y] = map_features[y][:x] + "N" + map_features[y][x + 1:]
+    plots[center_y] = plots[center_y][:center_x] + "L" + plots[center_y][center_x + 1:]
 
 
 def load_starts(plots):
@@ -186,12 +293,26 @@ def lua_rows(rows):
     return "\n".join(f'  "{row}",' for row in rows)
 
 
-def write_lua(plots, terrains, map_features, starts):
+def load_minor_starts(plots):
+    with (ROOT / "data/minor-starts.csv").open(newline="", encoding="utf-8") as source:
+        starts = list(csv.DictReader(source))
+    for start in starts:
+        position = tuple(map(round, project(float(start["longitude"]), float(start["latitude"]))))
+        start["x"], start["y"] = nearest_start_plot(*position, plots)
+    return starts
+
+
+def write_lua(plots, terrains, map_features, starts, minor_starts, river_edges):
     start_rows = "\n".join(
         f'  {row["civilization_type"]} = {{{row["primary_x"]}, {row["primary_y"]}, '
         f'{row["alternate_x"]}, {row["alternate_y"]}, {row["priority"]}}},'
         for row in starts
     )
+    minor_rows = "\n".join(
+        f'  {row["minor_civilization_type"]} = {{{row["x"]}, {row["y"]}}},'
+        for row in minor_starts
+    )
+    river_rows = "\n".join(f'  {{{x}, {y}, "{edge}"}},' for x, y, edge in river_edges)
     script = f'''-- Generated by scripts/generate_map.py. Do not edit by hand.
 include("MapGenerator")
 include("AssignStartingPlots")
@@ -207,6 +328,12 @@ local FEATURE_ROWS = {{
 }}
 local TSL = {{
 {start_rows}
+}}
+local MINOR_TSL = {{
+{minor_rows}
+}}
+local RIVER_EDGES = {{
+{river_rows}
 }}
 
 function GetMapScriptInfo()
@@ -261,6 +388,19 @@ function AddFeatures()
   end
 end
 
+function AddRivers()
+  for _, river in ipairs(RIVER_EDGES) do
+    local plot = Map.GetPlot(river[1], river[2])
+    if river[3] == "W" then
+      plot:SetWOfRiver(true, FlowDirectionTypes.FLOWDIRECTION_NORTH)
+    elseif river[3] == "NW" then
+      plot:SetNWOfRiver(true, FlowDirectionTypes.FLOWDIRECTION_NORTHEAST)
+    else
+      plot:SetNEOfRiver(true, FlowDirectionTypes.FLOWDIRECTION_NORTHWEST)
+    end
+  end
+end
+
 local function assignTSL()
   local claimed = {{}}
   for playerID = 0, GameDefines.MAX_MAJOR_CIVS - 1 do
@@ -280,6 +420,61 @@ local function assignTSL()
       end
     end
   end
+  local occupied = {{}}
+  for playerID = 0, GameDefines.MAX_MAJOR_CIVS - 1 do
+    local player = Players[playerID]
+    if player and player:IsEverAlive() then
+      local plot = player:GetStartingPlot()
+      if plot then occupied[#occupied + 1] = {{plot:GetX(), plot:GetY()}} end
+    end
+  end
+  return occupied
+end
+
+
+local function farEnoughFromStarts(x, y, occupied, minimumDistance)
+  for _, position in ipairs(occupied) do
+    if Map.PlotDistance(x, y, position[1], position[2]) < minimumDistance then return false end
+  end
+  return true
+end
+
+
+local function chooseMinorPlot(start, occupied)
+  local bestPlot, bestDistance = nil, 999
+  for radius = 0, 8 do
+    for y = math.max(0, start[2] - radius), math.min(HEIGHT - 1, start[2] + radius) do
+      for x = math.max(0, start[1] - radius), math.min(WIDTH - 1, start[1] + radius) do
+        local distance = Map.PlotDistance(start[1], start[2], x, y)
+        if distance <= radius and distance < bestDistance then
+          local plot = Map.GetPlot(x, y)
+          if plot and not plot:IsWater() and not plot:IsMountain() and farEnoughFromStarts(x, y, occupied, 4) then
+            bestPlot, bestDistance = plot, distance
+          end
+        end
+      end
+    end
+    if bestPlot then return bestPlot end
+  end
+  return nil
+end
+
+
+local function assignMinorTSL(occupied)
+  for playerID = GameDefines.MAX_MAJOR_CIVS, GameDefines.MAX_CIV_PLAYERS - 1 do
+    local player = Players[playerID]
+    if player and player:IsEverAlive() and player:IsMinorCiv() then
+      local minor = GameInfo.MinorCivilizations[player:GetMinorCivType()]
+      local start = minor and MINOR_TSL[minor.Type]
+      if start then
+        local plot = chooseMinorPlot(start, occupied)
+        if plot then
+          player:SetStartingPlot(plot)
+          occupied[#occupied + 1] = {{plot:GetX(), plot:GetY()}}
+        end
+      end
+    end
+  end
 end
 
 function StartPlotSystem()
@@ -289,7 +484,8 @@ function StartPlotSystem()
   database:BalanceAndAssign()
   database:PlaceNaturalWonders()
   database:PlaceResourcesAndCityStates()
-  assignTSL()
+  local occupied = assignTSL()
+  assignMinorTSL(occupied)
 end
 '''
     (ROOT / "Maps/HistoricalEurope.lua").write_text(script, encoding="utf-8")
@@ -298,7 +494,7 @@ end
 def write_starts(starts):
     fields = ["civilization_type", "primary_x", "primary_y", "alternate_x", "alternate_y", "priority", "region", "anchor"]
     with (ROOT / "data/generated-major-starts.csv").open("w", newline="", encoding="utf-8") as destination:
-        writer = csv.DictWriter(destination, fieldnames=fields)
+        writer = csv.DictWriter(destination, fieldnames=fields, lineterminator="\n")
         writer.writeheader()
         writer.writerows({field: row[field] for field in fields} for row in starts)
 
@@ -325,7 +521,7 @@ def write_starts_xml(starts):
     tree.write(ROOT / "XML/MajorStarts.xml", encoding="utf-8", xml_declaration=True)
 
 
-def write_preview(plots, terrains):
+def write_preview(plots, terrains, river_edges):
     codes = {
         ("O", "O"): 0, ("O", "C"): 1, ("L", "G"): 2, ("L", "P"): 3, ("L", "D"): 4,
         ("L", "T"): 5, ("L", "S"): 6, ("H", "G"): 7, ("H", "P"): 7, ("H", "D"): 7,
@@ -336,6 +532,7 @@ def write_preview(plots, terrains):
     colors = ["#173b62", "#3e78a8", "#67a35c", "#b8aa67", "#d7c36b", "#819b79", "#d9e5e8", "#806f54", "#584f49"]
     figure, axis = plt.subplots(figsize=(15, 10), dpi=160)
     axis.imshow(image, origin="lower", interpolation="nearest", cmap=ListedColormap(colors), vmin=0, vmax=8)
+    axis.scatter([edge[0] for edge in river_edges], [edge[1] for edge in river_edges], s=3, c="#42bff5")
     axis.set(title="Historical Europe TSL — generated 120×80 prototype", xlabel="X", ylabel="Y")
     axis.set_aspect("equal")
     figure.tight_layout()
@@ -346,13 +543,17 @@ def write_preview(plots, terrains):
 def main():
     source = json.loads((ROOT / "data/europe-countries.geojson").read_text(encoding="utf-8"))
     plots, terrains, map_features = build_grid(source["features"])
+    improve_start_region(-7.9811, 31.6295, plots, terrains, map_features, 3)
+    improve_start_region(19.0402, 47.4979, plots, terrains, map_features, 2)
     starts = load_starts(plots)
-    write_lua(plots, terrains, map_features, starts)
+    minor_starts = load_minor_starts(plots)
+    river_edges = build_river_edges(plots)
+    write_lua(plots, terrains, map_features, starts, minor_starts, river_edges)
     write_starts(starts)
     write_starts_xml(starts)
-    write_preview(plots, terrains)
+    write_preview(plots, terrains, river_edges)
     land_count = sum(row.count("L") + row.count("H") + row.count("M") for row in plots)
-    print(f"Generated {WIDTH}x{HEIGHT} map with {land_count} land tiles.")
+    print(f"Generated {WIDTH}x{HEIGHT} map with {land_count} land tiles and {len(river_edges)} river edges.")
 
 
 if __name__ == "__main__":

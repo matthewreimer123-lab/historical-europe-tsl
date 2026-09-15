@@ -10,7 +10,7 @@
     <Row CivilizationType="CIVILIZATION_GERMANY" PrimaryX="56" PrimaryY="50" AlternateX="52" AlternateY="40" Priority="10" Region="Germany" />
     <Row CivilizationType="CIVILIZATION_DENMARK" PrimaryX="53" PrimaryY="57" AlternateX="49" AlternateY="58" Priority="10" Region="Denmark" />
     <Row CivilizationType="CIVILIZATION_SWEDEN" PrimaryX="65" PrimaryY="64" AlternateX="53" AlternateY="61" Priority="10" Region="Scandinavia" />
-    <Row CivilizationType="CIVILIZATION_POLAND" PrimaryX="71" PrimaryY="49" AlternateX="69" AlternateY="44" Priority="10" Region="Poland" />
+    <Row CivilizationType="CIVILIZATION_POLAND" PrimaryX="71" PrimaryY="49" AlternateX="69" AlternateY="43" Priority="10" Region="Poland" />
     <Row CivilizationType="CIVILIZATION_AUSTRIA" PrimaryX="62" PrimaryY="40" AlternateX="58" AlternateY="40" Priority="10" Region="Danube" />
     <Row CivilizationType="CIVILIZATION_VENICE" PrimaryX="54" PrimaryY="34" AlternateX="47" AlternateY="34" Priority="10" Region="Northern Italy" />
     <Row CivilizationType="CIVILIZATION_ROME" PrimaryX="54" PrimaryY="26" AlternateX="58" AlternateY="23" Priority="10" Region="Italy" />
