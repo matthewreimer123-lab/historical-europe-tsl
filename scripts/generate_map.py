@@ -33,6 +33,35 @@ MOUNTAIN_LINES = [
     [(38.0, 43.0), (43.0, 42.5), (48.0, 42.0)],  # Caucasus
     [(53.0, 64.0), (55.0, 59.0), (55.0, 54.0), (54.0, 50.0)],  # Ural edge
     [(-10.0, 31.2), (-7.5, 32.0), (-5.0, 33.0), (-2.0, 34.5)],  # Atlas
+    [(31.0, 40.5), (35.0, 40.8), (39.0, 40.5)],  # Pontic Mountains
+    [(29.0, 37.0), (34.0, 37.2), (39.5, 37.0)],  # Taurus Mountains
+    [(44.0, 38.0), (47.0, 35.5), (50.0, 32.5), (53.0, 29.5)],  # Zagros
+    [(48.0, 36.5), (52.0, 36.2), (55.0, 36.5)],  # Alborz
+]
+
+# Lower upland belts. Width is measured in projected map tiles and density
+# controls how much of each belt becomes hills rather than level land.
+HILL_BANDS = [
+    ([(-6.0, 58.5), (-4.5, 56.5), (-3.2, 55.0)], 3.5, 0.90),  # Scottish Highlands
+    ([(-3.0, 55.2), (-2.2, 53.0), (-1.8, 51.8)], 2.4, 0.70),  # Pennines
+    ([(-4.5, 53.0), (-3.5, 51.5)], 2.5, 0.78),  # Cambrian Mountains
+    ([(-10.0, 53.5), (-9.0, 51.5)], 2.8, 0.62),  # western Ireland
+    ([(-8.5, 43.0), (-5.0, 43.1), (-2.0, 42.8)], 3.0, 0.84),  # Cantabrian Mountains
+    ([(-5.5, 41.0), (-3.0, 40.5), (-1.0, 39.5)], 4.0, 0.66),  # Spanish central uplands
+    ([(-4.5, 38.3), (-2.5, 37.2), (-0.5, 37.0)], 2.8, 0.75),  # Baetic ranges
+    ([(1.0, 46.5), (3.0, 45.2), (4.0, 44.3)], 4.0, 0.78),  # Massif Central
+    ([(6.0, 48.0), (7.5, 47.0)], 2.2, 0.72),  # Vosges and Black Forest
+    ([(9.5, 51.5), (11.5, 50.5), (13.5, 49.5)], 3.5, 0.57),  # German central uplands
+    ([(12.0, 50.5), (15.0, 49.5), (17.0, 49.0)], 3.0, 0.75),  # Bohemian Massif
+    ([(15.0, 46.5), (17.5, 45.5), (19.0, 44.5)], 2.8, 0.72),  # Dinaric foothills
+    ([(19.0, 44.0), (22.0, 42.5), (24.0, 40.0)], 3.5, 0.82),  # Dinaric Alps and Pindus
+    ([(24.0, 43.5), (27.0, 42.5), (29.0, 42.5)], 3.0, 0.68),  # Balkan Mountains
+    ([(25.0, 38.5), (23.0, 37.0), (22.0, 35.5)], 2.7, 0.70),  # Greek uplands
+    ([(27.0, 39.0), (32.0, 39.0), (37.0, 38.5), (41.0, 39.0)], 5.0, 0.68),  # Anatolian plateau
+    ([(34.0, 44.0), (35.0, 45.0)], 2.0, 0.66),  # Crimean Mountains
+    ([(31.0, 57.0), (34.0, 56.0)], 3.5, 0.48),  # Valdai Hills
+    ([(36.0, 52.0), (40.0, 50.0)], 4.0, 0.40),  # Central Russian Upland
+    ([(43.0, 39.0), (47.0, 36.0), (51.0, 32.0), (55.0, 29.0)], 5.0, 0.78),  # Iranian plateau
 ]
 
 # Simplified geographic centerlines, ordered roughly from source to mouth.
@@ -124,6 +153,16 @@ def mountain_distance(x, y):
     return result
 
 
+def hill_probability(x, y):
+    result = 0.0
+    for line, width, density in HILL_BANDS:
+        transformed = [project(lon, lat) for lon, lat in line]
+        distance = min(segment_distance(x, y, *a, *b) for a, b in zip(transformed, transformed[1:]))
+        if distance < width:
+            result = max(result, density * (1.0 - distance / width))
+    return result
+
+
 def hash01(x, y, salt=0):
     value = (x * 374761393 + y * 668265263 + salt * 2246822519) & 0xFFFFFFFF
     value = ((value ^ (value >> 13)) * 1274126177) & 0xFFFFFFFF
@@ -163,7 +202,10 @@ def build_grid(source_features):
                 feature_row.append("N")
                 continue
             relief, jitter = mountain_distance(x, y), hash01(x, y, 1)
-            plot = "M" if relief < 0.58 and jitter > 0.16 else ("H" if relief < 1.65 or jitter > 0.94 else "L")
+            upland = hill_probability(x, y)
+            plot = "M" if relief < 0.58 and jitter > 0.16 else (
+                "H" if relief < 1.65 or jitter < upland or jitter > 0.965 else "L"
+            )
             if lat >= 68:
                 terrain = "S"
             elif lat >= 62:
@@ -533,7 +575,7 @@ def write_preview(plots, terrains, river_edges):
     figure, axis = plt.subplots(figsize=(15, 10), dpi=160)
     axis.imshow(image, origin="lower", interpolation="nearest", cmap=ListedColormap(colors), vmin=0, vmax=8)
     axis.scatter([edge[0] for edge in river_edges], [edge[1] for edge in river_edges], s=3, c="#42bff5")
-    axis.set(title="Historical Europe TSL — generated 120×80 prototype", xlabel="X", ylabel="Y")
+    axis.set(title="Historical Europe TSL — generated 120×80 topography", xlabel="X", ylabel="Y")
     axis.set_aspect("equal")
     figure.tight_layout()
     figure.savefig(ROOT / "docs/map-preview.png")
