@@ -49,7 +49,9 @@ scripts/                    local validation tools
 4. Verify both civilizations start correctly in a normal modded-game setup.
 5. Only then add the remaining civilization starts and collision handling.
 
-The current test build is mod version 12. Version 12 expands the Nile valley
+The current test build is mod version 13. Version 13 adds the Sakarya,
+Kizilirmak, Gediz, Buyuk Menderes, Seyhan, and Ceyhan river systems across
+Anatolia. Version 12 expanded the Nile valley
 and its three-channel delta, adds Saharan oases and Mediterranean seafood,
 creates irregular shallow-water shelves, and provides two luxury opportunities
 around each active TSL. Version 11 guaranteed two nearby food

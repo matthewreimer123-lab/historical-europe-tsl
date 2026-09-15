@@ -83,6 +83,12 @@ RIVER_LINES = {
     "Dniester": [(24.0, 49.0), (26.0, 47.5), (28.5, 46.0), (30.0, 45.5)],
     "Dnieper": [(33.0, 54.5), (31.0, 52.0), (30.5, 50.4), (32.0, 48.0), (34.5, 46.0)],
     "Don": [(38.0, 54.0), (39.5, 51.0), (40.5, 48.0), (39.5, 47.0)],
+    "Sakarya": [(31.2, 39.0), (30.0, 39.4), (30.4, 40.2), (30.6, 41.1)],
+    "Kizilirmak": [(38.4, 39.8), (36.9, 38.7), (34.5, 38.9), (34.8, 40.2), (35.9, 41.7)],
+    "Gediz": [(29.4, 38.9), (28.5, 38.8), (27.6, 38.7), (26.9, 38.6)],
+    "Buyuk Menderes": [(30.0, 38.1), (29.0, 37.9), (28.0, 37.7), (27.1, 37.5)],
+    "Seyhan": [(35.7, 38.4), (35.4, 37.7), (34.8, 36.9), (34.2, 36.2)],
+    "Ceyhan": [(37.0, 38.2), (36.6, 37.6), (36.2, 37.0), (36.0, 36.6)],
     "Nile": [(31.2, 27.0), (31.1, 28.2), (31.0, 29.5), (31.0, 30.4), (31.2, 31.5)],
     "Jordan": [(35.6, 33.2), (35.5, 32.3), (35.5, 31.5)],
 }
@@ -92,7 +98,7 @@ RIVER_LINES = {
 # reaching their confluence. Long rivers get two branches; compact rivers get
 # one so dense regions gain water without becoming solid river-edge mazes.
 RIVER_BRANCH_COUNTS = {
-    name: (2 if name in {"Rhine", "Elbe", "Rhone", "Danube", "Vistula", "Dnieper", "Don", "Nile"} else 1)
+    name: (2 if name in {"Rhine", "Elbe", "Rhone", "Danube", "Vistula", "Dnieper", "Don", "Kizilirmak", "Nile"} else 1)
     for name in RIVER_LINES
 }
 
