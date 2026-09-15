@@ -49,10 +49,11 @@ scripts/                    local validation tools
 4. Verify both civilizations start correctly in a normal modded-game setup.
 5. Only then add the remaining civilization starts and collision handling.
 
-The current test build is mod version 7. Version 7 moderately compresses the
-oversized Russian and steppe region and adds Mongol, Persian, Babylonian, and
-Assyrian starts. Version 6 rebuilt rivers as continuous Civ V vertex paths,
-disabled random lakes, and added Egypt. Version 5 added regional topography.
+The current test build is mod version 8. Version 8 adds the Thames, moves the
+Nile's source away from the map boundary, and restores automatic flood plains
+on desert river tiles. Version 7 compressed the Russian and steppe region and
+added Mongol, Persian, Babylonian, and Assyrian starts. Version 6 introduced
+continuous guided river paths and added Egypt.
 
 ## Validation
 

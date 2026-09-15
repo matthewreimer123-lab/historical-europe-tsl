@@ -67,6 +67,7 @@ HILL_BANDS = [
 # Simplified geographic centerlines, ordered roughly from source to mouth.
 # They are converted to Civ V hex edges after the fixed land grid is built.
 RIVER_LINES = {
+    "Thames": [(-1.8, 51.7), (-1.0, 51.6), (-0.1, 51.5), (0.7, 51.5)],
     "Tagus": [(-1.0, 40.3), (-3.0, 40.0), (-5.5, 39.6), (-7.5, 39.2), (-9.0, 38.7)],
     "Ebro": [(-3.0, 42.8), (-1.5, 42.4), (0.0, 41.8), (1.2, 41.2), (0.8, 40.8)],
     "Guadalquivir": [(-4.8, 38.0), (-4.3, 37.6), (-5.3, 37.2), (-6.3, 36.9)],
@@ -83,7 +84,7 @@ RIVER_LINES = {
     "Dnieper": [(33.0, 54.5), (31.0, 52.0), (30.5, 50.4), (32.0, 48.0), (34.5, 46.0)],
     "Don": [(38.0, 54.0), (39.5, 51.0), (40.5, 48.0), (39.5, 47.0)],
     "Volga": [(37.0, 57.0), (41.0, 55.5), (45.0, 52.0), (48.0, 48.0), (48.5, 45.0)],
-    "Nile": [(31.2, 28.2), (31.0, 29.5), (31.1, 30.7), (31.2, 31.4)],
+    "Nile": [(31.2, 29.0), (31.0, 29.8), (31.1, 30.7), (31.2, 31.4)],
     "Jordan": [(35.6, 33.2), (35.5, 32.3), (35.5, 31.5)],
     "Euphrates": [(38.0, 38.5), (40.0, 36.5), (42.0, 34.0), (44.5, 32.0), (47.0, 30.5)],
     "Tigris": [(42.5, 38.0), (43.5, 36.0), (44.0, 34.0), (46.0, 31.5)],
@@ -434,6 +435,14 @@ function AddFeatures()
   local decoded = decodeRows(FEATURE_ROWS, {{N = -1, F = GameInfoTypes.FEATURE_FOREST}})
   for i = 0, Map.GetNumPlots() - 1 do
     if decoded[i + 1] ~= -1 then Map.GetPlotByIndex(i):SetFeatureType(decoded[i + 1], -1) end
+  end
+  local desert = GameInfoTypes.TERRAIN_DESERT
+  local floodPlains = GameInfoTypes.FEATURE_FLOOD_PLAINS
+  for i = 0, Map.GetNumPlots() - 1 do
+    local plot = Map.GetPlotByIndex(i)
+    if plot:GetTerrainType() == desert and plot:IsRiver() and not plot:IsMountain() then
+      plot:SetFeatureType(floodPlains, -1)
+    end
   end
 end
 
