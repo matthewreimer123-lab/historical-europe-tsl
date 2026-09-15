@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod id="c48d4f93-8cf1-47ed-a512-291b03496a73" version="1">
+  <Properties>
+    <Name>Historical Development Pacing</Name>
+    <Teaser>Slower eras, faster construction, and more viable expansion.</Teaser>
+    <Description>Rebalances Civ V so civilizations have time to build, settle, and fight with each era's tools before the next era arrives. Designed to work independently or alongside Historical Europe TSL.</Description>
+    <Authors>Matthew Reimer</Authors>
+    <AffectsSavedGames>1</AffectsSavedGames>
+    <MinCompatibleSaveVersion>0</MinCompatibleSaveVersion>
+    <SupportsSinglePlayer>1</SupportsSinglePlayer>
+    <SupportsMultiplayer>1</SupportsMultiplayer>
+  </Properties>
+  <Dependencies />
+  <References />
+  <Blocks />
+  <Files>
+    <File md5="" import="0">SQL/HistoricalPacing.sql</File>
+  </Files>
+  <Actions>
+    <OnModActivated>
+      <UpdateDatabase>SQL/HistoricalPacing.sql</UpdateDatabase>
+    </OnModActivated>
+  </Actions>
+</Mod>

@@ -2,12 +2,18 @@
 
 A gameplay-scaled Europe map for Civilization V: Brave New World, designed for dense settlement, true starting locations (TSL), and compatibility with separate gameplay mods.
 
+This repository now contains two independently selectable mods:
+
+- The repository root is **Historical Europe TSL**, the map mod.
+- [`HistoricalPacing/`](HistoricalPacing/) is **Historical Development Pacing**,
+  the optional science, culture, production, and expansion overhaul.
+
 ## Design goals
 
 - A purpose-built **120 x 80**, non-wrapping Europe map.
 - Enlarged Western and Central Europe so nearby civilizations have usable territory.
 - True starts selected dynamically rather than fixed scenario players.
-- The map mod remains separate from the planned Historical Pacing mod.
+- The map mod remains separate from the optional Historical Development Pacing mod.
 - Normal mod selection remains available; no replacement Advanced Setup screen is planned.
 
 ## Current status
